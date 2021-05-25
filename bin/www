@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+// Lnkdto.link - Copyright (C) 2021 Moritz Kaufmann
+// Bootstrap File
+
+// Load Express App and other dependencies
+var app = require('../app');
+var http = require('http');
+
+// Get Port from Env Var and set to Server
+var port = normalizePort('3001');
+app.set('port', port);
+
+//Create HTTP server
+var server = http.createServer(app);
+
+// Listen on the provided port
+server.listen(port);
+server.on('listening', onListening);
+
+//Event listener for HTTP server "listening" event
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
+  console.log('Listening on ' + bind);
+}
+
+// Normalize a port into a number, string, or false.
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
