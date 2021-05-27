@@ -2,3 +2,4 @@
 /.idea/
 /static/
 *.js
+!webpack.config.js

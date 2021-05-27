@@ -25,6 +25,11 @@ export module SessionHandler {
             storage[CookieAPI.getCookies(req, SESSION_COOKIE_KEY)] = {};
     }
 
+    // Get Session-ID
+    export function getSessionID(req):string {
+        return CookieAPI.getCookies(req, SESSION_COOKIE_KEY);
+    }
+
     // Get a storage
     export function getStorage(req):object {
         if (!storage[CookieAPI.getCookies(req, SESSION_COOKIE_KEY)])

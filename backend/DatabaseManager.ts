@@ -78,8 +78,10 @@ export module UrlHelper {
     // Create a shorten URL
     export function generateUrl(longURL:string, id:string):string {
         if (DatabaseHelper.selectData(database, "urls", {longUrl:longURL}, {}).length > 0) {
+            // Return the Url, if it already exists
             return DatabaseHelper.selectData(database, "urls", {longUrl:longURL}, {})[0].shortUrl;
         } else {
+            // Create the url
             const shortUrl = generateRandomString(6);
             DatabaseHelper.insertData(database, "urls", {
                 longUrl: longURL,
@@ -92,22 +94,27 @@ export module UrlHelper {
         }
     }
 
+    // Get all Urls from a specific user
     export function getUrlsFromUser(id:string):ShortUrl[] {
         return DatabaseHelper.selectData(database, "urls", {user:id}, {});
     }
 
+    // Get the data of a specific url
     export function getUrlData(shortUrl:string):ShortUrl {
         return DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl}, {})[0];
     }
 
+    // Check if an url exists
     export function urlExists(shortUrl:string):boolean {
         return DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl}, {}).length > 0;
     }
 
+    // Get the long url of a shorten link
     export function getLongUrl(shortUrl:string, countHits:boolean):string|boolean {
         if (urlExists(shortUrl)) {
             const fetchedUrl:ShortUrl = getUrlData(shortUrl);
 
+            // Update Count Data,
             if (countHits) {
                 fetchedUrl.clicks += 1;
                 const currentDate = new Date().toLocaleDateString("de-DE");
@@ -121,10 +128,12 @@ export module UrlHelper {
 
             return fetchedUrl.longUrl;
         } else {
+            // Fallback, if the url doesn't exists
             return false;
         }
     }
 
+    // Check if a user has access to an url
     export function hasUserAccessToUrl(shortUrl:string, id:string) {
         return DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl,user:id}, {}).length > 0
     }

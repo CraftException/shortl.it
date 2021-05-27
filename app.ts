@@ -12,6 +12,7 @@ import * as coookieparser from "cookie-parser";
 
 // Import API-Router
 import * as apiRouter from "./backend/ApiHandler";
+import {UrlHelper} from "./backend/DatabaseManager";
 
 // Add express instance
 var app = express();
@@ -38,6 +39,11 @@ app.get("/api", (req, res) => {
 })
 
 app.use('*', (req, res) => {
+    console.log(req.originalUrl.substring(1))
+    if (UrlHelper.urlExists(req.originalUrl.substring(1))) {
+        res.redirect(<string>UrlHelper.getLongUrl(req.originalUrl.substring(1), true));
+        return;
+    }
     res.sendFile(path.resolve(__dirname, './view', 'container.html'));
 });
 
