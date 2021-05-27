@@ -7,6 +7,12 @@ import * as express from "express";
 // Import path for static servers
 import * as path from "path";
 
+// Import Cookie-Parser
+import * as coookieparser from "cookie-parser";
+
+// Import API-Router
+import * as apiRouter from "./backend/ApiHandler";
+
 // Add express instance
 var app = express();
 
@@ -15,8 +21,13 @@ app.set('views', path.join(__dirname, 'layout'));
 app.set('view engine', 'ejs');
 
 // Setup express details
+app.use(coookieparser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Import API Router
+// @ts-ignore
+app.use(apiRouter);
 
 // Setup express static files
 app.use("/static", express.static(path.resolve(`${__dirname}/static`)));
