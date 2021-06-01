@@ -1,24 +1,28 @@
 
 <div class="modal fade" id="modelLoginForm" tabindex="-1" role="dialog" aria-labelledby="loginModel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form method="post" action="">
+        <form action="javascript:void('')" id="login">
             <div class="modal-content">
 
                 <div class="modal-header text-center">
-                    <h4 class="modal-title w-100 font-weight-bold">Einloggen</h4>
+                    <h4 class="modal-title w-100 font-weight-bold">
+                        Einloggen
+                        <br>
+                        <span id="login_message" style="color:red"></span>
+                    </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body mx-3">
                     <div class="md-form mb-5">
-                        <input type="text" name="name" id="form3" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="form3">Name</label>
+                        <input type="text" name="name" id="login_name" class="form-control validate" required>
+                        <label data-error="wrong" data-success="right" for="login_name">Name</label>
                     </div>
 
                     <div class="md-form mb-4">
-                        <input type="password" name="password" id="form2" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="form2">Passwort</label>
+                        <input type="password" name="password" id="login_pw" class="form-control validate" required>
+                        <label data-error="wrong" data-success="right" for="login_pw">Passwort</label>
                     </div>
 
                 </div>
@@ -32,29 +36,33 @@
 
 <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="registerModel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form method="post" action="">
+        <form method="get" action="javascript:void('')" id="register">
             <div class="modal-content">
 
                 <div class="modal-header text-center">
-                    <h4 class="modal-title w-100 font-weight-bold">Registrieren</h4>
+                    <h4 class="modal-title w-100 font-weight-bold">
+                        Registrieren
+                        <br>
+                        <span id="register_message" style="color:red"></span>
+                    </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body mx-3">
                     <div class="md-form mb-5">
-                        <input type="email" name="mail" id="form3" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="form3">E-Mail Adresse</label>
+                        <input type="email" name="mail" id="register_mail" class="form-control validate" required>
+                        <label data-error="wrong" data-success="right" for="register_mail">E-Mail Adresse</label>
                     </div>
 
                     <div class="md-form mb-5">
-                        <input type="text" name="name" id="form3" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="form3">Name</label>
+                        <input type="text" name="name" id="register_name" class="form-control validate" required>
+                        <label data-error="wrong" data-success="right" for="register_name">Name</label>
                     </div>
 
                     <div class="md-form mb-4">
-                        <input type="password" name="password" id="form2" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="form2">Passwort</label>
+                        <input type="password" name="password" id="register_pw" class="form-control validate" required>
+                        <label data-error="wrong" data-success="right" for="register_pw">Passwort</label>
                     </div>
 
                 </div>

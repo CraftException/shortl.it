@@ -37,5 +37,14 @@ app.use(viewRouter);
 // Setup express static files
 app.use("/assets", express.static(path.resolve(`${__dirname}/static`)));
 
+// Redirect to specific long url
+app.get("*", (req, res) => {//@ts-ignore
+    if (UrlHelper.urlExists(req.url.substring(1))) { //@ts-ignore
+        res.redirect(UrlHelper.getLongUrl(req.url.substring(1), true));
+    } else {
+        res.redirect("/");
+    }
+});
+
 // Export of the app for the bootstrap file
 module.exports = app;

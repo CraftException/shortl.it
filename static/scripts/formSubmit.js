@@ -20,11 +20,11 @@ function handleUrlShorting() {
         }
     }).done((data) => {
         if (data.message === "OK") {
-            $("#longUrl").val(data.shortUrl);
+            $("#longUrl").val(window.location.origin + "/" + data.shortUrl);
             $("#longUrlMessage").html("<span style='color: green'>Your URL has been shorten</span>");
         } else {
             $("#longUrl").val("");
-            $("#longUrlMessage").html("<span style='color: red'>An error has been occured while shorting the URL. Please try again.</span>");
+            $("#longUrlMessage").html("<span style='color: red'>An error occurred while shorting the URL. Please try again.</span>");
         }
     });
 }

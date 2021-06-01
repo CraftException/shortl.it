@@ -14,4 +14,8 @@ router.get("/view/start", (req, res) => {
     res.render("views/start", {});
 })
 
+router.get("/view/stats", (req, res) => {
+    res.render("views/stats", {});
+})
+
 module.exports = router;

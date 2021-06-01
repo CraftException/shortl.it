@@ -15,4 +15,8 @@ router.get("/", (req, res) => {
     res.render("container", {navbarWithForm: true, view: "start"});
 });
 
+router.get("/stats", (req, res) => {
+    res.render("container", {navbarWithForm: true, view: "stats"});
+});
+
 module.exports = router;
