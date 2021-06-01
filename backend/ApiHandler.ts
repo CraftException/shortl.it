@@ -14,7 +14,6 @@ const {version} = require("../package.json");
 
 // Import Password Hashing
 import * as hashing from "password-hash";
-import getUrlData = UrlHelper.getUrlData;
 
 // Get Router
 const router = express.Router();
@@ -133,7 +132,7 @@ router.post("/api/getShortUrl", (req, res) => {
     const longURL = req.body["longUrl"];
     res.json({
        message: "OK",
-       shortUrl: UrlHelper.generateUrl(longURL, SessionHandler.getSessionID(req))
+       shortUrl: UrlHelper.generateUrl(longURL, typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getSessionID(req) : "___")
     });
 });
 

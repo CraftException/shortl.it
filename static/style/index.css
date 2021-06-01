@@ -1,0 +1,44 @@
+.navHome {
+    background-color: transparent; 
+    color: white !important;
+    position: fixed; 
+    top: 0; 
+    width: 100%
+}
+
+.foreColorNavbar {
+    color: white;
+}
+
+.featureColumns {
+    width: 87% !important;
+    padding-top: 2%;
+}
+
+.footerContainer {
+    background-color: #212121; 
+    padding-left: 5%; 
+    padding-right: 5%;
+    padding-top: 2%; 
+    padding-bottom: 1%; 
+    margin-top: 0 !important; 
+    color: white !important;
+}
+
+.imprintButton {
+    text-decoration: none;
+    color: #ffffff; 
+    font-size: 20px;
+}
+
+.header {
+    border-bottom-right-radius: 90px !important;
+    width: 100% !important;
+    background-position: 0%; background-attachment: fixed;
+    background-size: cover;
+    background-image: url('https://cdn.discordapp.com/attachments/817317495299113011/844480539783069726/Zeichenflache_5.png');
+    background-position: 0%;
+    color: #000 !important;
+    color: white !important;
+    filter: brightness(100%);
+}

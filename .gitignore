@@ -1,5 +1,4 @@
 /node_modules/
 /.idea/
-/static/
 *.js
-!webpack.config.js
+!/static/scripts/*.js

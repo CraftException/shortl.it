@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include("partials/head.ejs", {}); %>
+</head>
+<body style="margin:0;">
+
+    <%- include("partials/navbar.ejs", {}); %>
+    <%- include("partials/header_with_form.ejs", {}); %>
+
+    <div id="loader"><i class="fa fa-spinner fa-spin"></i></div>
+
+    <div style="display:none;" id="pageContent" class="animate-bottom"></div>
+
+    <%- include("partials/footer.ejs", {}); %>
+
+    <script>
+        var viewToLoad = "<%= view %>";
+    </script>
+
+    <script src="/assets/scripts/navbar.js"></script>
+    <script src="/assets/scripts/loader.js"></script>
+    <script src="/assets/scripts/formSubmit.js"></script>
+
+</body>
+</html>

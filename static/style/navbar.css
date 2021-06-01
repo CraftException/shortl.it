@@ -1,0 +1,163 @@
+body {
+    background-color: #f5f5f5 !important;
+}
+
+@media (max-width: 992px) {
+    .responsivetext1 {
+        font-size: 40px !important;
+    }
+
+    .responsivetext2 {
+        font-size: 20px;
+    }
+
+    .dropdown-toggle {
+        display: none;
+    }
+
+    .dropdown-menu {
+        display: block;
+        position: relative;
+        border-width: 0;
+        padding: 0;
+        margin: 0;
+
+    }
+
+    .dropdown-item {
+        padding: .5rem 0rem;
+        color: rgba(0,0,0,.5);
+        background-color: white !important;
+    }
+
+    nav {
+    }
+
+    .navbar-nav ml-auto {
+        background-color: white !important;
+    }
+
+    .header {
+        padding-top: 15% !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .nav-item {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+nav {
+    transition: 1s;
+}
+
+.header {
+    padding-top: 4%;
+}
+
+/* FORMBAR */
+.form__group {
+    position: relative;
+    padding: 15px 0 0;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.form__field {
+    font-family: inherit;
+    width: 100%;
+    border: 0;
+    border-bottom: 2px solid #ffffff;
+    outline: 0;
+    font-size: 1.3rem;
+    color: white;
+    padding: 7px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+}
+
+.form__field::placeholder {
+    color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 20px;
+}
+
+.form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.form__field:focus {
+    padding-bottom: 6px;
+    border-width: 3px;
+
+}
+
+.form__field:focus ~ .form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.form__field:required, .form__field:invalid {
+    box-shadow: none;
+}
+
+
+
+/* Buttons */
+button {
+    border-radius: 4px;
+    background: linear-gradient(to bottom right, #112931 0%, #3968d1 100%);
+    border: none;
+    color: #fff;
+    text-align: center;
+    font-size: 32px;
+    padding: 16px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 36px;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0,.7);
+}
+
+button{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+button:hover{
+    padding: 20px;
+}
+
+.min-btn {
+    margin: 15px;
+}
+
+.min-btn:hover{
+    padding: 10px;
+}
+
+button:hover:after {
+    opacity: 1;
+    right: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}

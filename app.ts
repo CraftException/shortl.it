@@ -12,6 +12,8 @@ import * as coookieparser from "cookie-parser";
 
 // Import API-Router
 import * as apiRouter from "./backend/ApiHandler";
+import * as mainRouter from "./router/Main";
+import * as viewRouter from "./router/Views";
 import {UrlHelper} from "./backend/DatabaseManager";
 
 // Add express instance
@@ -28,24 +30,12 @@ app.use(express.urlencoded({ extended: false }));
 
 // Import API Router
 // @ts-ignore
-app.use(apiRouter);
+app.use(apiRouter);// @ts-ignore
+app.use(mainRouter);// @ts-ignore
+app.use(viewRouter);
 
 // Setup express static files
-app.use("/static", express.static(path.resolve(`${__dirname}/static`)));
-
-app.get("/api", (req, res) => {
-    res.json({ message: "Hello from server!" });
-    res.end();
-})
-
-app.use('*', (req, res) => {
-    console.log(req.originalUrl.substring(1))
-    if (UrlHelper.urlExists(req.originalUrl.substring(1))) {
-        res.redirect(<string>UrlHelper.getLongUrl(req.originalUrl.substring(1), true));
-        return;
-    }
-    res.sendFile(path.resolve(__dirname, './view', 'container.html'));
-});
+app.use("/assets", express.static(path.resolve(`${__dirname}/static`)));
 
 // Export of the app for the bootstrap file
 module.exports = app;
