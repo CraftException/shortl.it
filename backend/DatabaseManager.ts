@@ -46,9 +46,9 @@ export module UserHelper {
         DatabaseHelper.insertData(database, "User", user)
     }
 
-    // Update Username
-    export function updateUsername(oldDisplayName:string, newDisplayName:string) {
-        DatabaseHelper.updateData(database, "User", {displayname:oldDisplayName}, {$set:{displayname:newDisplayName}})
+    // Update Mail
+    export function updateMail(displayName:string, newMail:string) {
+        DatabaseHelper.updateData(database, "User", {displayname:displayName}, {$set:{mail:newMail}})
     }
 
     // Update Password

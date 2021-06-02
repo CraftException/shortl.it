@@ -69,7 +69,7 @@ router.post("/api/login", (req, res) => {
 });
 
 // Check if the user is logged in
-router.post("/api/isLoggedIn", (req, res) => {
+router.get("/api/isLoggedIn", (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined') {
@@ -81,9 +81,10 @@ router.post("/api/isLoggedIn", (req, res) => {
     } else {
         // The user isn't logged in
         res.json({
-            message: "Not logged in"
+            message: "Not logged in",
         });
     }
+    console.log(req.cookies)
 });
 
 // Register a new account
@@ -103,7 +104,7 @@ router.post("/api/register", (req, res) => {
         });
     } else {
         // Check if the user already exists
-        if (UserHelper.usernameExists(username) || UserHelper.mailExists(email)) {
+        if (UserHelper.usernameExists(username) || UserHelper.mailExists(email) || username === "___") {
             res.json({
                 message: "Already exists"
             });
@@ -227,6 +228,54 @@ router.post("/api/hasUserAccessToUrl", (req, res) => {
             message: "Not logged in"
         });
     }
+});
+
+// Change a user account
+router.post("/api/changeData", (req, res) => {
+    SessionHandler.initializeSession(req, res);
+
+    // The new userdata
+    const newMailData = req.body["mail"];
+    const newPasswordData = req.body["password"];
+
+    // Check if the user is logged in
+    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined') {
+        // Check if the mail has to been changed
+        if (typeof newMailData !== 'undefined') {
+            UserHelper.updateMail(SessionHandler.getStorage(req)["username"], newMailData);
+
+            // Return that the mail has been changed
+            res.json({
+                message: "OK"
+            });
+        }
+
+        // Check if the password has to been changed
+        if (typeof newPasswordData !== 'undefined') {
+            UserHelper.updatePassword(SessionHandler.getStorage(req)["username"], hashing.generate(newPasswordData));
+
+            // Return if the password has been changed
+            res.json({
+                message: "OK"
+            });
+        }
+
+    } else {
+        // The user is not logged in
+        res.json({
+            message: "Not logged in"
+        });
+    }
+});
+
+// Logout
+router.post("/api/logout", (req, res) => {
+    // Delete username
+    SessionHandler.getStorage(req)["username"] = undefined;
+
+    res.json({
+        message: "OK"
+    });
 });
 
 module.exports = router;

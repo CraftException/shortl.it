@@ -1,25 +1,44 @@
 <nav id="navHome" class="navHome navbar navbar-expand-lg navbar-light sticky-top">
     <div class="container-fluid max-width-940">
-        <a class="navbar-brand" href="index" class="foreColorNavbar" style="color: white;"> lnkdto.link </a>
+        <a class="navbar-brand" href="index" class="foreColorNavbar" style="color: white;"> lnkdto.link (beta) </a>
         <button class="navbar-toggler togglerNoBorder" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse backgroundWhite" id="navbarNavDropdown">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/" class="foreColorNavbar" style="color: white;">Startseite </a>
+                    <a class="nav-link" onclick="loadView('start', '/')" class="foreColorNavbar" style="color: white;">Home </a>
                 </li>
+
+                <% if (isLoggedIn) { %>
+
+                    <li class="nav-item dropdown navDropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="foreColorNavbar" style="color: white;">
+                            Account
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navDropdown" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" onclick="loadView('usercontrol', '/user/usercontrol')"  id="shorturls">Your shorten URLs</a>
+                            <a class="dropdown-item" onclick="loadView('edituser', '/user/edituser')" id="edit_user">Edit User</a>
+                            <a class="dropdown-item" id="logout">Logout</a>
+                        </div>
+                    </li>
+
+                <% } else { %>
+
                 <li class="nav-item dropdown navDropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="foreColorNavbar" style="color: white;">
                         Account
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navDropdown" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" data-toggle="modal" data-target="#modelLoginForm">Anmelden</a>
-                        <a class="dropdown-item" data-toggle="modal" data-target="#modalRegisterForm" >Registrieren</a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#modelLoginForm">Login</a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#modalRegisterForm" >Register</a>
                     </div>
                 </li>
+
+                <% } %>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="/" class="foreColorNavbar" style="color: white;">Statistiken</a>
+                    <a class="nav-link" onclick="loadView('stats', '/stats')" class="foreColorNavbar" style="color: white;">Statistics</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="https://github.com/CraftException/lnkdto.link/" class="foreColorNavbar" style="color: white;">GitHub</a>

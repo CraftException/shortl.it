@@ -3,6 +3,7 @@
 
 // Import Express
 import * as express from "express";
+import {SessionHandler} from "../backend/SessionManager";
 
 // Import Version
 const {version} = require("../package.json");
@@ -16,6 +17,20 @@ router.get("/view/start", (req, res) => {
 
 router.get("/view/stats", (req, res) => {
     res.render("views/stats", {});
+})
+
+router.get("/view/usercontrol", (req, res) => {
+    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined')
+        res.render("views/usercontrol", {});
+    else
+        res.end("You are not logged in");
+})
+
+router.get("/view/edituser", (req, res) => {
+    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined')
+        res.render("views/edituser", {});
+    else
+        res.end("You are not logged in");
 })
 
 module.exports = router;

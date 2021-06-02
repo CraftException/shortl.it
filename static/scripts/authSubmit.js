@@ -7,7 +7,6 @@ $("#login").submit(() => {
             password: $("#login_pw").val()
         }
     }).done((data) => {
-        console.log(data.message)
         if (data.message == "OK") {
             document.location.href = "/user/control";
         } else if (data.message === "User does not exists") {
@@ -21,6 +20,10 @@ $("#login").submit(() => {
 });
 
 $("#register").submit(() => {
+    $("#loader").attr('style','display: block');
+    $("#pageContent").attr('style','display: none');
+    $("#footer").attr('style','display: none');
+
     $.ajax({
         url: "/api/register",
         method: "POST",
@@ -30,13 +33,28 @@ $("#register").submit(() => {
             email: $("#register_mail").val()
         }
     }).done((data) => {
-        console.log(data.message)
         if (data.message == "OK") {
             document.location.href = "/user/control";
         } else if (data.message === "Already exists") {
             $("#register_message").text("The User already exists!");
+            loadView("start", "");
         } else {
             $("#register_message").text("An error occurred. Please try again!");
+            loadView("start", "");
         }
+    });
+});
+
+$("#logout").click(() => {
+    $("#loader").attr('style','display: block');
+    $("#pageContent").attr('style','display: none');
+    $("#footer").attr('style','display: none');
+
+    $.ajax({
+        url: "/api/logout",
+        method: "POST"
+    }).done((data) => {
+        document.location.reload();
+        document.location.href = "/";
     });
 });

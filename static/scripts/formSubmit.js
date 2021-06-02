@@ -1,5 +1,5 @@
-$("#url_valid").submit(() => {
-    if (isStringAValidHttpUrl($("#longUrl").val())) {
+$("#url_shorting").submit(() => {
+    if (isStringAValidHttpUrl($("#longUrl").val()) || $("#longUrl").val().startsWith("https://lnkdto.link")) {
         handleUrlShorting();
     } else {
         $("#longUrl").val("");
@@ -21,7 +21,13 @@ function handleUrlShorting() {
     }).done((data) => {
         if (data.message === "OK") {
             $("#longUrl").val(window.location.origin + "/" + data.shortUrl);
-            $("#longUrlMessage").html("<span style='color: green'>Your URL has been shorten</span>");
+            $("#longUrlMessage").html("<span style='color: green'>The Link has been copied to the clipboard</span>");
+
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($("#longUrl").val()).select();
+            document.execCommand("copy");
+            $temp.remove();
         } else {
             $("#longUrl").val("");
             $("#longUrlMessage").html("<span style='color: red'>An error occurred while shorting the URL. Please try again.</span>");

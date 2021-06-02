@@ -6,23 +6,31 @@
 <body style="margin:0;">
 
     <%- include("partials/navbar.ejs", {}); %>
-    <%- include("partials/header_with_form.ejs", {}); %>
+
+    <% if (navbarWithForm) { %>
+        <%- include("partials/header_with_form.ejs", {}); %>
+    <% } else { %>
+        <%- include("partials/header.ejs", {}); %>
+    <% } %>
 
     <div id="loader"><i class="fa fa-spinner fa-spin"></i></div>
 
     <div style="display:none; background-color: #ffffff !important" id="pageContent" class="animate-bottom"></div>
 
-    <%- include("partials/footer.ejs", {}); %>
+    <%- include("partials/footer.ejs", {fullWhite: view!=="edituser"||view!=="usercontrol"}); %>
     <%- include("partials/modals.ejs", {}); %>
 
     <script>
         var viewToLoad = "<%= view %>";
+        if (viewToLoad == "edituser")
+            loadEditPageSubmitListener();
     </script>
 
     <script src="/assets/scripts/navbar.js"></script>
     <script src="/assets/scripts/loader.js"></script>
     <script src="/assets/scripts/formSubmit.js"></script>
     <script src="/assets/scripts/authSubmit.js"></script>
+    <script src="/assets/scripts/changeSubmit.js"></script>
 
 </body>
 </html>

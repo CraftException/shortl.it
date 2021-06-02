@@ -116,7 +116,9 @@ nav {
     box-shadow: none;
 }
 
-
+.nav-item a:hover {
+    cursor: pointer;
+}
 
 /* Buttons */
 button {
