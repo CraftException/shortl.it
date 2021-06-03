@@ -77,21 +77,24 @@ export module UrlHelper {
 
     // Create a shorten URL
     export function generateUrl(longURL:string, id:string):string {
-        if (DatabaseHelper.selectData(database, "urls", {longUrl:longURL}, {}).length > 0) {
-            // Return the Url, if it already exists
-            return DatabaseHelper.selectData(database, "urls", {longUrl:longURL}, {})[0].shortUrl;
-        } else {
-            // Create the url
-            const shortUrl = generateRandomString(6);
-            DatabaseHelper.insertData(database, "urls", {
-                longUrl: longURL,
-                shortUrl: shortUrl,
-                user: id,
-                clicks: 0,
-                clickTime: {}
-            });
+        var shortUrl = generateURL();
+        DatabaseHelper.insertData(database, "urls", {
+            longUrl: longURL,
+            shortUrl: shortUrl,
+            user: id,
+            clicks: 0,
+            clickTime: {}
+        });
+        return shortUrl;
+    }
+
+    // Generate a short Url
+    function generateURL() {
+        var shortUrl = generateRandomString(6);
+        if (urlExists(shortUrl))
+            return generateURL();
+        else
             return shortUrl;
-        }
     }
 
     // Get all Urls from a specific user
