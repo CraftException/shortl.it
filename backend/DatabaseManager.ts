@@ -14,7 +14,7 @@ import * as deasync from "deasync";
 const mongouri = fs.readFileSync("backend/mongouri.txt", "utf-8");
 
 // MongoDB Details
-const database = "test";
+export const database = "test";
 
 // API for User Management
 export module UserHelper {

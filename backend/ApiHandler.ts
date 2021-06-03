@@ -6,7 +6,7 @@ import * as express from "express";
 
 // Import Session-Manager
 import {SessionHandler} from "./SessionManager";
-import {DatabaseHelper, UrlHelper, UserHelper} from "./DatabaseManager";
+import {database, DatabaseHelper, UrlHelper, UserHelper} from "./DatabaseManager";
 import User = UserHelper.User;
 
 // Import Version
@@ -24,6 +24,30 @@ router.get("/api", (req, res) => {
     res.json({
         version: version
     });
+});
+
+// Get stats
+router.get("/api/stats", (req, res) => {
+    SessionHandler.initializeSession(req, res);
+
+    // Calculate Clicks
+    var clicks = 0;
+    DatabaseHelper.selectData(database, "urls", {}, {}).forEach(data => clicks += data.clicks);
+
+    // Calculate mostClicks
+    var mostClicks = 0;
+    DatabaseHelper.selectData(database, "urls", {}, {}).forEach(data => {
+        if (data.clicks > mostClicks)
+            mostClicks = data.clicks
+    });
+
+    res.json({
+        message: "OK",
+        shortenUrls: DatabaseHelper.selectData(database, "urls", {}, {}).length,
+        users: DatabaseHelper.selectData(database, "User", {}, {}).length,
+        clicks: clicks,
+        mostClicks: mostClicks
+    })
 });
 
 // Login Handler
