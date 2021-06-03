@@ -28,6 +28,10 @@ function handleUrlShorting() {
             $temp.val($("#longUrl").val()).select();
             document.execCommand("copy");
             $temp.remove();
+
+            if (window.location.toString().includes("/user/usercontrol")) {
+                loadView('usercontrol', '/user/usercontrol');
+            }
         } else {
             $("#longUrl").val("");
             $("#longUrlMessage").html("<span style='color: red'>An error occurred while shorting the URL. Please try again.</span>");

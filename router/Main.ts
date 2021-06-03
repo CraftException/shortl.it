@@ -21,11 +21,11 @@ router.get("/stats", (req, res) => {
 });
 
 router.get("/user/edituser", (req, res) => {
-    res.render("container", {navbarWithForm: false, isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined', view: "edituser"});
+    res.render("container", {navbarWithForm: true, isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined', view: "edituser"});
 });
 
 router.get("/user/usercontrol", (req, res) => {
-    res.render("container", {navbarWithForm: false, isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined', view: "usercontrol"});
+    res.render("container", {navbarWithForm: true, isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined', view: "usercontrol"});
 });
 
 module.exports = router;

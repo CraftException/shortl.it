@@ -138,6 +138,11 @@ export module UrlHelper {
         return DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl,user:id}, {}).length > 0
     }
 
+    // Delete an Url
+    export function deleteUrl(shortUrl:string) {
+        DatabaseHelper.deleteData(database, "urls", {shortUrl: shortUrl});
+    }
+
 }
 
 // Database API for global MongoDB Connections

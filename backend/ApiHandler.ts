@@ -133,7 +133,7 @@ router.post("/api/getShortUrl", (req, res) => {
     const longURL = req.body["longUrl"];
     res.json({
        message: "OK",
-       shortUrl: UrlHelper.generateUrl(longURL, typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getSessionID(req) : "___")
+       shortUrl: UrlHelper.generateUrl(longURL, typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___")
     });
 });
 
@@ -175,10 +175,41 @@ router.post("/api/urlInfo", (req, res) => {
         });
     } else {
         // Check if the user ahs access to an url
-        if (UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getSessionID(req))) {
+        if (UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])) {
             res.json({
                 message: "OK",
                 data: UrlHelper.getUrlData(shortUrl)
+            });
+        } else {
+            // The user does not have access to this url
+            res.json({
+                message: "Access forbidden",
+            });
+        }
+    }
+});
+
+// Delete an Url
+router.post("/api/deleteUrl", (req, res) => {
+    SessionHandler.initializeSession(req, res);
+
+    // Get information
+    const shortUrl = req.body["shortUrl"];
+
+    // Check if the url exists
+    if (!(UrlHelper.urlExists(shortUrl))) {
+        // The url does not exists
+        res.json({
+            message: "URL not exists"
+        });
+    } else {
+        // Check if the user ahs access to an url
+        if (UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])) {
+            // Delete the Url
+            UrlHelper.deleteUrl(shortUrl);
+
+            res.json({
+                message: "OK"
             });
         } else {
             // The user does not have access to this url
@@ -220,7 +251,7 @@ router.post("/api/hasUserAccessToUrl", (req, res) => {
         // Return if the user has access to this url
         res.json({
             message: "OK",
-            data: UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getSessionID(req))
+            data: UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])
         });
     } else {
         // The user is not logged in

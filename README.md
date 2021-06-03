@@ -27,4 +27,4 @@ Current Version: Beta 2.0
  - Private URLs (Only accessible with a password)
  - Multi-Language Support
 
-_Developed with Love by <a href="https://github.com/CraftException">Craftexception</a> for <a href="https://jusoft.dev">JuSoft</a>_
+_Developed with <3 by <a href="https://github.com/CraftException">Craftexception</a> for <a href="https://jusoft.dev">JuSoft</a>_

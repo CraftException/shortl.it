@@ -1,1 +1,52 @@
-<h1>This is the usercontrol file!</h1>
+<center style="margin-top: 50px">
+    <h1>Your shorten URLs</h1>
+
+    <% if (content.length > 0) { %>
+    <section class="columns">
+
+        <div class="column" style="max-height: 30vw; overflow-y: scroll">
+
+            <% content.forEach(function(url) { %>
+
+                <div>
+                    <h5><%= url.longUrl %></h5>
+                    <h3 id="shortLink<%= url.shortUrl %>"><%= url.shortUrl %></h3>
+                    <button id="showDetailedStats<%= url.shortUrl %>">Show detailed Stats</button><br><br>
+                    <table>
+                        <tr>
+                            <td><button id="open<%= url.shortUrl %>">Open Link</button></td>
+                            <td><button id="delete<%= url.shortUrl %>">Delete Link</button></td>
+                        </tr>
+                    </table>
+                    <br><br>
+                </div>
+
+            <% }); %>
+
+        </div>
+
+        <div class="column">
+            <h3>Detailed stats of <b id="currentDetailedStats"></b></h3>
+            <h4>Total Clicks: <b id="totalClicks"></b></h4>
+            <canvas id="chart"></canvas>
+        </div>
+
+    </section>
+
+    <% } else { %>
+        <h1>There are no URLs to show!</h1>
+    <% } %>
+</center>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.30.1/date_fns.min.js" integrity="sha512-F+u8eWHrfY8Xw9BLzZ8rG/0wIvs0y+JyRJrXjp3VjtFPylAEEGwKbua5Ip/oiVhaTDaDs4eU2Xtsxjs/9ag2bQ==" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    setTimeout(() => {
+        <% content.forEach(function (content) { %>
+            addButtonListeners(JSON.parse(`<%- JSON.stringify(content) %>`));
+        <% }) %>
+
+        showDetailedStats(JSON.parse(`<%- JSON.stringify(content) %>`)[0]);
+    }, 450);
+
+</script>

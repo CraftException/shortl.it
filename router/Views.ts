@@ -4,6 +4,7 @@
 // Import Express
 import * as express from "express";
 import {SessionHandler} from "../backend/SessionManager";
+import {UrlHelper} from "../backend/DatabaseManager";
 
 // Import Version
 const {version} = require("../package.json");
@@ -21,7 +22,7 @@ router.get("/view/stats", (req, res) => {
 
 router.get("/view/usercontrol", (req, res) => {
     if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined')
-        res.render("views/usercontrol", {});
+        res.render("views/usercontrol", {content: UrlHelper.getUrlsFromUser(SessionHandler.getStorage(req)["username"])});
     else
         res.end("You are not logged in");
 })
