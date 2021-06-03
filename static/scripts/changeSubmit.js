@@ -28,7 +28,6 @@ function loadEditPageSubmitListener() {
                     mail: $("#new_mail").val()
                 }
             }).done((data) => {
-                console.log(data.message)
                 if (data.message == "OK") {
                     $("#changeMailMessage").attr('style', 'color: green');
                     $("#changeMailMessage").text("Your mail has been changed!");

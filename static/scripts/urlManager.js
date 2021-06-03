@@ -16,7 +16,6 @@ function addButtonListeners (url) {
                 shortUrl: url.shortUrl
             }
         }).done((data) => {
-            console.log(data);
             if (data.message == "OK") {
                 document.location.reload();
             }
@@ -36,7 +35,6 @@ function showDetailedStats(url) {
 }
 
 function showChart(labels, data) {
-    console.log([labels, data])
 
     if (currentChart != null) {
         currentChart.destroy();

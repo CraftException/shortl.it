@@ -19,7 +19,7 @@ Current Version: Beta 2.0
  - User detail editing
 
 ### In work
- - Stat-Management
+ - Better Stat-Management
  - Homepage
 
 ### For future updates
