@@ -45,6 +45,24 @@ $("#register").submit(() => {
     });
 });
 
+$("#recovery").submit(() => {
+    $.ajax({
+        url: "/api/requestPasswordChange",
+        method: "POST",
+        data: {
+            username: $("#recovery_mail").val()
+        }
+    }).done((data) => {
+        if (data.message == "OK") {
+            $("#recovery_message").attr('style', 'color: green');
+            $("#recovery_message").text("A password recovery link has been send to your mail address!");
+        } else {
+            $("#recovery_message").attr('style', 'color: red');
+            $("#recovery_message").text("An error occurred. Please try again!");
+        }
+    });
+});
+
 $("#logout").click(() => {
     $("#loader").attr('style','display: block');
     $("#pageContent").attr('style','display: none');

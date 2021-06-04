@@ -41,6 +41,11 @@ export module UserHelper {
         return DatabaseHelper.selectData(database, "User", {displayname:name}, {})[0]
     }
 
+    // Get an account by mail
+    export function getAccountByMail(mail):User {
+        return DatabaseHelper.selectData(database, "User", {mail:mail}, {})[0]
+    }
+
     // Create an Account
     export function createAccount(user:User) {
         DatabaseHelper.insertData(database, "User", user)
@@ -144,6 +149,31 @@ export module UrlHelper {
     // Delete an Url
     export function deleteUrl(shortUrl:string) {
         DatabaseHelper.deleteData(database, "urls", {shortUrl: shortUrl});
+    }
+
+}
+
+// API for password Recovery
+export module RecoveryHelper {
+
+    // Create a Token
+    export function createToken (mail:string) {
+        const token = generateRandomString(10);
+        DatabaseHelper.insertData(database, "recovery", {
+            mail: mail,
+            token: token
+        })
+        return token;
+    }
+
+    // Check if a token exists
+    export function tokenExists (token:string):boolean {
+        return DatabaseHelper.selectData(database, "recovery", {token: token}, {}).length > 0
+    }
+
+    // Get the email by a Token
+    export function getEmail(token:string):string {
+        return DatabaseHelper.selectData(database, "recovery", {token: token}, {})[0].mail
     }
 
 }

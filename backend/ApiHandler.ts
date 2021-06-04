@@ -6,7 +6,7 @@ import * as express from "express";
 
 // Import Session-Manager
 import {SessionHandler} from "./SessionManager";
-import {database, DatabaseHelper, UrlHelper, UserHelper} from "./DatabaseManager";
+import {database, DatabaseHelper, RecoveryHelper, UrlHelper, UserHelper} from "./DatabaseManager";
 import User = UserHelper.User;
 
 // Import Version
@@ -14,6 +14,7 @@ const {version} = require("../package.json");
 
 // Import Password Hashing
 import * as hashing from "password-hash";
+import {sendRecoveryMail} from "./mailHelper";
 
 // Get Router
 const router = express.Router();
@@ -319,6 +320,43 @@ router.post("/api/changeData", (req, res) => {
         // The user is not logged in
         res.json({
             message: "Not logged in"
+        });
+    }
+});
+
+// Request a password change
+router.post("/api/requestPasswordChange", (req, res) => {
+    if (!(typeof SessionHandler.getStorage(req)["username"] !== 'undefined')) {
+        // Get recovery mail
+        const username = req.body["username"];
+
+        // Check if the provided mail does exists
+        if (UserHelper.usernameExists(username)) {
+            // Get the username
+            const mail = UserHelper.getAccount(username).mail;
+
+            // Generate a token
+            const token = RecoveryHelper.createToken(mail);
+
+            // Send the mail
+            sendRecoveryMail(mail, {
+                username: username,
+                link: "https://lnkdto.link/resetPassword?token=" + token
+            })
+
+            res.json({
+                message: "OK"
+            });
+        } else {
+            // The mail does not exists
+            res.json({
+                message: "The mail does not exists"
+            });
+        }
+    } else {
+        // The user is already logged in
+        res.json({
+            message: "The user is already logged in!"
         });
     }
 });

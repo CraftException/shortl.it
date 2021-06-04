@@ -146,17 +146,18 @@ button:hover{
     padding: 20px;
 }
 
-.min-btn {
-    margin: 15px;
-}
-
-.min-btn:hover{
-    padding: 10px;
-}
-
 button:hover:after {
     opacity: 1;
     right: 10px;
+}
+
+.higlighted-a {
+    text-decoration: underline;
+    color: #0e3149;
+}
+
+a:hover {
+    cursor: pointer;
 }
 
 a {
