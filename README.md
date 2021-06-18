@@ -1,4 +1,4 @@
-//<img src="https://i.imgur.com/GBwMxHG.png">
+<!--<img src="https://i.imgur.com/GBwMxHG.png">-->
 <img src="https://i.imgur.com/yZxAwMG.gif">
 
 # [lnkdto.link](https://lnkdto.link)
