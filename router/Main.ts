@@ -4,6 +4,7 @@
 // Import Express
 import * as express from "express";
 import {SessionHandler} from "../backend/SessionManager";
+import {UrlHelper} from "../backend/DatabaseManager";
 
 // Import Version
 const {version} = require("../package.json");
@@ -26,6 +27,10 @@ router.get("/user/edituser", (req, res) => {
 
 router.get("/user/usercontrol", (req, res) => {
     res.render("container", {navbarWithForm: true, isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined', view: "usercontrol"});
+});
+
+router.get("/extension", (req, res) => {
+    res.render("extension", {content: UrlHelper.getUrlsFromUser(SessionHandler.getStorage(req)["username"]), isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined'});
 });
 
 module.exports = router;

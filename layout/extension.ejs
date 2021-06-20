@@ -1,0 +1,86 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="description" content="Global Browser Extension for lnkdto.link">
+    <meta name="author" content="CraftException">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/assets/style/extension.css">
+</head>
+
+<body style="width:400px; height: 500px;">
+<div style="max-width:400px; max-height: 500px;">
+
+    <div class="container">
+        <div>
+            <img src="https://i.imgur.com/UgbqRAL.png" width="48px">
+        </div>
+        <div class="text">
+            <b>lnkdto</b>.link
+        </div>
+    </div>
+
+    <center style="margin-top: 20px;">
+
+        <form method="get" action="javascript:void('')" id="url_shorting">
+            <div id="longUrlField" class="form__group field">
+                <input id="longUrl" type="input" class="form__field" value="" placeholder="Leave Empty for current Tab" name="url" required="" style="max-width: 70%;">
+
+            </div>
+            <p><button type="submit">Create short link</button></p>
+        </form>
+
+    </center><br>
+
+    <center style="max-height: 300px;overflow-y: scroll">
+        <% if (isLoggedIn) { %>
+            <% if (content.length > 0) { %>
+                <b>Your shorten URLs:</b><br><br>
+
+                <% content.forEach(function (url) { %>
+                    <div style="margin: 5px;">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span style="min-width: 250px; display: inherit; font-size: 16px;"><%= url.longUrl.substring(0,30) %><%= url.longUrl.length > 30 ? "...": "" %></span>
+                                    <span style="font-size: 12px;"><b><%= url.clicks %></b> Clicks</span>
+                                </td>
+                                <td>
+                                    <div style="margin-left: 20px;">
+                                        <i id="open<%= url.shortUrl %>" class="fas fa-link"></i>
+                                        <i id="copy<%= url.shortUrl %>" class="fas fa-copy"></i>
+                                        <i id="delete<%= url.shortUrl %>" class="fas fa-trash"></i>
+                                        <i id="stats<%= url.shortUrl %>" class="fas fa-chart-line"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <b>No URLs available!</b>
+            <% } %>
+        <% } else { %>
+            <i>Please login in at <br><a href="https://lnkdto.link">https://lnkdto.link</a><br> to manage your URLs</i>
+        <% } %>
+
+    </center>
+</div>
+
+<script src="/assets/scripts/formSubmit.js"></script>
+<script src="/assets/scripts/urlManager.js"></script>
+<script>
+    setTimeout(() => {
+        <% content.forEach(function (content) { %>
+            addExtensionButtonListeners(JSON.parse(`<%- JSON.stringify(content) %>`));
+        <% }) %>
+    }, 450);
+
+</script>
+</body>
+
+</html>

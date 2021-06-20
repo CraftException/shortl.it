@@ -28,6 +28,42 @@ function addButtonListeners (url) {
 
 }
 
+function addExtensionButtonListeners (url) {
+
+    $("#open" + url.shortUrl).click(() => {
+        window.open(url.longUrl);
+    });
+
+    $("#delete" + url.shortUrl).click(() => {
+        $.ajax({
+            url: "/api/deleteUrl",
+            method: "POST",
+            data: {
+                shortUrl: url.shortUrl
+            }
+        }).done((data) => {
+            if (data.message == "OK") {
+                document.location.reload();
+            }
+        });
+    });
+
+    $("#copy" + url.shortUrl).click(() => {
+        var $temp = $("<input>");
+        $("body").append($temp);
+
+        $temp.val(url.longUrl).select();
+        document.execCommand("copy");
+
+        $temp.remove();
+    });
+
+    $("#stats" + url.shortUrl).click(() => {
+        window.open("user/usercontrol");
+    });
+
+}
+
 function showDetailedStats(url) {
     showChart(Object.keys(url.clickTime), Object.values(url.clickTime));
     $("#currentDetailedStats").text(window.location.origin + "/" + url.shortUrl);
