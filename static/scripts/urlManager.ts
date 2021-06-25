@@ -77,6 +77,7 @@ function showChart(labels, data) {
         currentChart = null;
     }
 
+    //@ts-ignore
     currentChart = new Chart(document.getElementById('chart').getContext('2d'), {
         type: 'line',
         data: {

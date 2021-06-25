@@ -1,4 +1,4 @@
-$("#url_shorting").submit(() => {
+$("#url_shorting").submit(() => { //@ts-ignore
     if (isStringAValidHttpUrl($("#longUrl").val()) || $("#longUrl").val().startsWith("https://lnkdto.link")) {
         handleUrlShorting();
     } else {

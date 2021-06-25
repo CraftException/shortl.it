@@ -1,3 +1,4 @@
+//@ts-ignore
 $(document).ready(() => loadView(viewToLoad, viewToLoad));
 
 function loadView(view, url) {
