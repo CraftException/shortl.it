@@ -46,6 +46,17 @@
                 <li class="nav-item">
                     <a class="nav-link" href="https://jusoft.dev" class="foreColorNavbar" style="color: white;">JuSoft</a>
                 </li>
+
+                <li class="nav-item dropdown navDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="foreColorNavbar" style="color: white;">
+                        <%= selectedLangShortCode %>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right navDropdown" aria-labelledby="navbarDropdownMenuLink">
+                        <% availableLangs.forEach(function (lang) { %>
+                            <a href="/api/lang?lang=<%= lang %>" class="dropdown-item" id="lang_en"><%= lang %></a>
+                        <% }) %>
+                    </div>
+                </li>
             </ul>
         </div>
 

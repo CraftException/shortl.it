@@ -4,6 +4,7 @@
 // Import Cookie Parser
 import * as coookieparser from "cookie-parser";
 import {generateRandomString} from "./NumberGenerator";
+import {LanguageManager} from "./LanguageManager";
 
 // The Session Storage, while the Server is running
 var storage:object = {};
@@ -50,7 +51,7 @@ export module SessionHandler {
 }
 
 // API for Cookie Handling
-module CookieAPI {
+export module CookieAPI {
 
     // Set a cookie
     export function setCookie (res, key:string, value:string) {

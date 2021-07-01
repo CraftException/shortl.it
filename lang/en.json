@@ -1,0 +1,104 @@
+{
+  "details": {
+    "lang": "en",
+    "fallback": "en",
+    "version": "0.0.1",
+    "finished": true
+  },
+  "names": {
+    "short": "EN",
+    "long": "English"
+  },
+
+  "lang": {
+
+    "footer": {
+        "about": "About Lnkdto.link",
+        "description": "Lnkdto.link is a simple URL-Shortener, to cut your URLs",
+        "legal": {
+          "legal": "Legal",
+          "imprint": "Imprint",
+          "privacy": "Privacy Policy"
+        },
+        "copyright": "© 2021 CraftException and"
+    },
+
+    "header": {
+      "longUrl": "Long URL",
+      "button": "Create short link"
+    },
+
+    "modals": {
+      "login": {
+        "title": "Login",
+        "name": "Name",
+        "password": "Password",
+        "button": "Submit",
+        "passwordLost": "Password Lost?"
+      },
+      "register": {
+        "title": "Register",
+        "email": "E-Mail Address",
+        "name": "Name",
+        "password": "Password",
+        "button": "Submit"
+      },
+      "passwordRecovery": {
+        "title": "Password Recovery",
+        "username": "Username",
+        "button": "Submit"
+      }
+    },
+
+    "navbar": {
+      "brand": "lnkdto.link (beta)",
+      "home": "Home",
+      "account": {
+        "account": "Account",
+        "shortenurls": "Your shorten URLs",
+        "edituser": "Edit User",
+        "logout": "Logout",
+        "login": "Login",
+        "register": "Register"
+      },
+      "statistics": "Statistics",
+      "github": "GitHub",
+      "jusoft": "JuSoft"
+    },
+
+    "edituser": {
+      "mail": {
+        "title": "Update Mail",
+        "newMail": "New Mail",
+        "updateMail": "Update Mail",
+        "button": "Update Mail"
+      },
+      "password": {
+        "title": "Update Password",
+        "newPassword": "New Password",
+        "repeatPassword": "Repeat new Password",
+        "button": "Update Password"
+      }
+    },
+
+    "stats": {
+      "shortenUrls": "Shorten URLs",
+      "totalClicks": "Total Clicks",
+      "mostClicks": "Clicks of the URL, with most clicks",
+      "users": "Registered Users"
+    },
+
+    "overview": {
+      "title": "Your shorten URLs",
+      "noURLs": "There are no URLs to show!",
+      "buttons": {
+        "stats": "Show detailed Stats",
+        "open": "Open Link",
+        "delete": "Delete Link"
+      },
+      "detailedStats": "Detailed stats of",
+      "totalClicks": "Total Clicks:",
+      "clicks": "Clicks"
+    }
+  }
+}
