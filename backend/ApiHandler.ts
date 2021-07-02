@@ -15,6 +15,7 @@ const {version} = require("../package.json");
 // Import Password Hashing
 import * as hashing from "password-hash";
 import {sendRecoveryMail} from "./mailHelper";
+import {LanguageManager} from "./LanguageManager";
 
 // Get Router
 const router = express.Router();
@@ -93,6 +94,21 @@ router.post("/api/login", (req, res) => {
     }
 });
 
+// Update the language
+router.get("/api/lang", (req, res) => {
+    LanguageManager.initializeLang(req, res);
+
+    if (!LanguageManager.languageExists(req.query["lang"].toString())) {
+        res.json({
+            message: "Language not found"
+        });
+        return;
+    } else {
+        LanguageManager.updateLanguage(res, req.query["lang"].toString());
+        res.redirect(req.query["source"].toString());
+    }
+});
+
 // Check if the user is logged in
 router.get("/api/isLoggedIn", (req, res) => {
     SessionHandler.initializeSession(req, res);
@@ -109,7 +125,6 @@ router.get("/api/isLoggedIn", (req, res) => {
             message: "Not logged in",
         });
     }
-    console.log(req.cookies)
 });
 
 // Register a new account

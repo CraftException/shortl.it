@@ -13,7 +13,7 @@ export module LanguageManager {
 
     loagLanguages();
     const LANGUAGE_COOKIE_KEY:string = "LANG";
-    const DEFAULT_LANG:string = "en";
+    export const DEFAULT_LANG:string = "en";
 
     export const languages:object[] = []
 
@@ -21,6 +21,10 @@ export module LanguageManager {
         // Create a session, if it doesn't exists
         if (!CookieAPI.cookieExists(req, LANGUAGE_COOKIE_KEY))
             CookieAPI.setCookie(res, LANGUAGE_COOKIE_KEY, DEFAULT_LANG)
+    }
+
+    export function updateLanguage(res, lang):void {
+        CookieAPI.setCookie(res, LANGUAGE_COOKIE_KEY, lang);
     }
 
     export function getLanguage(lang:string):object {
@@ -44,10 +48,17 @@ export module LanguageManager {
         return Object.keys(languages);
     }
 
-    export function getLanguagesLongCodes() {
-        var languageLongCodes:string[] = [];
+    export function languageExists(language:string):boolean {
+        return languages[language] != undefined;
+    }
+
+    export function getLanguagesCodes() {
+        var languageLongCodes:object[] = [];
         getAllLanguages().forEach(lang => {
-            languageLongCodes.push(getLanguage(lang)["names"]["long"]);
+            languageLongCodes.push({
+                names: getLanguage(lang)["names"],
+                code: getLanguage(lang)["details"]["lang"]
+            });
         });
         return languageLongCodes;
     }

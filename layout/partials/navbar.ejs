@@ -53,7 +53,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navDropdown" aria-labelledby="navbarDropdownMenuLink">
                         <% availableLangs.forEach(function (lang) { %>
-                            <a href="/api/lang?lang=<%= lang %>" class="dropdown-item" id="lang_en"><%= lang %></a>
+                            <a onclick="document.location.href='/api/lang?lang=<%= lang.code %>&source=' + document.location.href" class="dropdown-item" id="lang_en"><%= lang.names.long %></a>
                         <% }) %>
                     </div>
                 </li>

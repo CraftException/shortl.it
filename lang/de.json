@@ -1,0 +1,103 @@
+{
+  "details": {
+    "lang": "de",
+    "fallback": "en",
+    "version": "0.0.1",
+    "finished": true
+  },
+  "names": {
+    "short": "DE",
+    "long": "German"
+  },
+
+  "lang": {
+    "footer": {
+        "about": "Über Lnkdto.link",
+        "description": "Lnkdto.link ist ein simpler URL-Kürzer um lange URLs zu kürzen",
+        "legal": {
+          "legal": "Rechtliches",
+          "imprint": "Impressum",
+          "privacy": "Datenschutz"
+        },
+        "copyright": "© 2021 CraftException und"
+    },
+
+    "header": {
+      "longUrl": "Lange URL",
+      "button": "Link kürzen"
+    },
+
+    "modals": {
+      "login": {
+        "title": "Einloggen",
+        "name": "Name",
+        "password": "Passwort",
+        "button": "Anmelden",
+        "passwordLost": "Passwort vergessen?"
+      },
+      "register": {
+        "title": "Registrieren",
+        "email": "E-Mail Addresse",
+        "name": "Name",
+        "password": "Passwort",
+        "button": "Registrieren"
+      },
+      "passwordRecovery": {
+        "title": "Passwort zurücksetzen",
+        "username": "Benutzname",
+        "button": "Passwort zurücksetzen"
+      }
+    },
+
+    "navbar": {
+      "brand": "lnkdto.link (beta)",
+      "home": "Startseite",
+      "account": {
+        "account": "Account",
+        "shortenurls": "Deine gekürzten URLs",
+        "edituser": "Account bearbeiten",
+        "logout": "Abmelden",
+        "login": "Einloggen",
+        "register": "Registrieren"
+      },
+      "statistics": "Statistiken",
+      "github": "GitHub",
+      "jusoft": "JuSoft"
+    },
+
+    "edituser": {
+      "mail": {
+        "title": "Mail ändern",
+        "newMail": "Neue Mail",
+        "updateMail": "Neue Mail wiederholen",
+        "button": "Mail ändern"
+      },
+      "password": {
+        "title": "Passwort ändern",
+        "newPassword": "Neues Passwort",
+        "repeatPassword": "Neues Passwort wiederholen",
+        "button": "Passwort ändern"
+      }
+    },
+
+    "stats": {
+      "shortenUrls": "Gekürzte URLs",
+      "totalClicks": "Gesamt Aufrufe",
+      "mostClicks": "Meistgeklickte URL",
+      "users": "Registrierte Nutzer"
+    },
+
+    "overview": {
+      "title": "Deine gekürzten URLs",
+      "noURLs": "Du hast noch keine URL gekürzt",
+      "buttons": {
+        "stats": "Statistiken",
+        "open": "Link öffnen",
+        "delete": "Link löschen"
+      },
+      "detailedStats": "Statisiken von",
+      "totalClicks": "Gesamte Aufrufe:",
+      "clicks": "Aufrufe"
+    }
+  }
+}

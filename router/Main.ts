@@ -15,6 +15,10 @@ const router = express.Router();
 
 router.get("*", (req, res, next) => {
     LanguageManager.initializeLang(req, res);
+
+    if (!LanguageManager.languageExists(LanguageManager.getLanguageCode(req))) {
+        LanguageManager.updateLanguage(res, LanguageManager.DEFAULT_LANG);
+    }
     next();
 });
 
@@ -23,7 +27,7 @@ router.get("/", (req, res) => {
         navbarWithForm: true,
         isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined',
         selectedLangShortCode: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req))["names"]["short"],
-        availableLangs: LanguageManager.getLanguagesLongCodes(),
+        availableLangs: LanguageManager.getLanguagesCodes(),
         view: "start"
     });
 });
@@ -33,7 +37,7 @@ router.get("/stats", (req, res) => {
         navbarWithForm: false,
         isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined',
         selectedLangShortCode: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req))["names"]["short"],
-        availableLangs: LanguageManager.getLanguagesLongCodes(),
+        availableLangs: LanguageManager.getLanguagesCodes(),
         view: "stats"
     });
 });
@@ -43,7 +47,7 @@ router.get("/user/edituser", (req, res) => {
         navbarWithForm: true,
         isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined',
         selectedLangShortCode: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req))["names"]["short"],
-        availableLangs: LanguageManager.getLanguagesLongCodes(),
+        availableLangs: LanguageManager.getLanguagesCodes(),
         view: "edituser"
     });
 });
@@ -53,7 +57,7 @@ router.get("/user/usercontrol", (req, res) => {
         navbarWithForm: true,
         isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined',
         selectedLangShortCode: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req))["names"]["short"],
-        availableLangs: LanguageManager.getLanguagesLongCodes(),
+        availableLangs: LanguageManager.getLanguagesCodes(),
         view: "usercontrol"
     });
 });
