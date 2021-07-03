@@ -60,7 +60,7 @@ export module LanguageManager {
     }
 
     export function getLanguageCode(req):string {
-        return CookieAPI.getCookies(req, LANGUAGE_COOKIE_KEY);
+        return CookieAPI.getCookies(req, LANGUAGE_COOKIE_KEY) || "en";
     }
 
     export function loagLanguages():void {
