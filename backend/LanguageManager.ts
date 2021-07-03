@@ -1,9 +1,5 @@
-/*
-*  lnkdto-link2 ©2021
-*  Developer: CraftException
-*
-*  LICENSE: MIT
-*/
+// Lnkdto.link - Copyright (C) 2021 Moritz Kaufmann
+// Language Manager
 
 import {generateRandomString} from "./NumberGenerator";
 import {CookieAPI} from "./SessionManager";

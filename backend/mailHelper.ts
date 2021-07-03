@@ -17,8 +17,8 @@ export function sendRecoveryMail (receiver:string, templateParameters:object) {
         tls: { rejectUnauthorized: false },
         port: 25,
         auth: {
-            user: 'no-reply@lnkdto.link',
-            pass: 'Wi8dBCNzcnSUv96'
+            user: 'yourmail',
+            pass: 'abcdefg'
         }
     });
 
