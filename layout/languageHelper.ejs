@@ -1,0 +1,17 @@
+<%
+    _lang = (langString) => {
+        var parsedString = langString.split(".");
+
+        var fallbackString = fallback["lang"];
+        parsedString.forEach(elem => fallbackString = fallbackString[elem]);
+
+        try {
+            var selectedLangString = selectedLang["lang"];
+            parsedString.forEach(elem => selectedLangString = selectedLangString[elem]);
+            return selectedLangString || fallbackString;
+        } catch (e) {
+            return fallbackString;
+        }
+
+    };
+%>

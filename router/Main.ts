@@ -23,44 +23,34 @@ router.get("*", (req, res, next) => {
 });
 
 router.get("/", (req, res) => {
-    res.render("container", {
-        navbarWithForm: true,
-        isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined',
-        selectedLangShortCode: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req))["names"]["short"],
-        availableLangs: LanguageManager.getLanguagesCodes(),
-        view: "start"
-    });
+    res.render("container", getContainerParameters(req, true, "start"));
 });
 
 router.get("/stats", (req, res) => {
-    res.render("container", {
-        navbarWithForm: false,
-        isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined',
-        selectedLangShortCode: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req))["names"]["short"],
-        availableLangs: LanguageManager.getLanguagesCodes(),
-        view: "stats"
-    });
+    res.render("container", getContainerParameters(req, false, "stats"));
 });
 
 router.get("/user/edituser", (req, res) => {
-    res.render("container", {
-        navbarWithForm: true,
-        isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined',
-        selectedLangShortCode: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req))["names"]["short"],
-        availableLangs: LanguageManager.getLanguagesCodes(),
-        view: "edituser"
-    });
+    res.render("container", getContainerParameters(req, true, "edituser"));
 });
 
 router.get("/user/usercontrol", (req, res) => {
-    res.render("container", {
+    res.render("container", getContainerParameters(req, true, "usercontrol"));
+});
+
+function getContainerParameters(req, navbarWithForm:boolean, view:string) {
+    return {
         navbarWithForm: true,
         isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined',
+
         selectedLangShortCode: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req))["names"]["short"],
         availableLangs: LanguageManager.getLanguagesCodes(),
-        view: "usercontrol"
-    });
-});
+        selectedLang: LanguageManager.getLanguage(LanguageManager.getLanguageCode(req)),
+        fallback: LanguageManager.getFallbackLanguage(LanguageManager.getLanguageCode(req)),
+
+        view:view
+    };
+}
 
 router.get("/extension", (req, res) => {
     res.render("extension", {

@@ -4,12 +4,12 @@
 
             <form method="get" action="javascript:void('')" id="url_shorting">
                 <div id="longUrlField" class="form__group field">
-                    <input id="longUrl" type="input" class="form__field" placeholder="Long URL" name="url" required="">
-                    <label id="longUrlMessage" for="name" class="form__label">Long URL</label>
+                    <input id="longUrl" type="input" class="form__field" placeholder="<%- _lang("header.longUrl"); %>" name="url" required="">
+                    <label id="longUrlMessage" for="name" class="form__label"><%- _lang("header.longUrl"); %></label>
                 </div>
                 <br>
 
-                <p><button type="submit">Create short link</button></p>
+                <p><button type="submit"><%- _lang("header.button"); %></button></p>
             </form>
         </div></center>
 </div>

@@ -3,39 +3,39 @@
     <center><section class="columns" style="max-width: 40vw;">
 
             <div class="column">
-                <h1>Update Mail</h1><br>
+                <h1><%- _lang("edituser.mail.title"); %></h1><br>
                 <span style="color: green" id="changeMailMessage"></span>
                 <form style="" method="get" action="javascript:void('')" id="changeMail">
                     <div class="modal-body mx-3">
                         <div class="md-form mb-5">
                             <input type="mail" name="name" id="new_mail" class="form-control validate" required>
-                            <label data-error="wrong" data-success="right" for="new_mail">New Mail</label>
+                            <label data-error="wrong" data-success="right" for="new_mail"><%- _lang("edituser.mail.newMail"); %></label>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
-                        <button type="submit" name="submit" class="button btn-success" value="submit">Update Mail</button>
+                        <button type="submit" name="submit" class="button btn-success" value="submit"><%- _lang("edituser.mail.button"); %></button>
                     </div>
                 </form>
 
             </div>
 
             <div class="column">
-                <h1>Update Password</h1><br>
+                <h1><%- _lang("edituser.password.title"); %></h1><br>
                 <span style="color: green" id="changePasswordMessage"></span>
                 <form style="" method="get" action="javascript:void('')" id="changePassword">
                     <div class="modal-body mx-3">
                         <div class="md-form mb-5">
                             <input type="password" name="name" id="new_pw" class="form-control validate" required>
-                            <label data-error="wrong" data-success="right" for="new_pw">New Password</label>
+                            <label data-error="wrong" data-success="right" for="new_pw"><%- _lang("edituser.password.newPassword"); %></label>
                         </div>
 
                         <div class="md-form mb-4">
                             <input type="password" name="password" id="new_pw_1" class="form-control validate" required>
-                            <label data-error="wrong" data-success="right" for="new_pw_1">Repeat new Password</label>
+                            <label data-error="wrong" data-success="right" for="new_pw_1"><%- _lang("edituser.password.repeatPassword"); %></label>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
-                        <button type="submit" name="submit" class="button btn-success" value="submit">Update Password</button>
+                        <button type="submit" name="submit" class="button btn-success" value="submit"><%- _lang("edituser.password.button"); %></button>
                     </div>
                 </form>
 

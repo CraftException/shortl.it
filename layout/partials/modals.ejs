@@ -6,7 +6,7 @@
 
                 <div class="modal-header text-center">
                     <h4 class="modal-title w-100 font-weight-bold">
-                        Einloggen
+                        <%- _lang("modals.login.title"); %>
                         <br>
                         <span id="login_message" style="color:red"></span>
                     </h4>
@@ -17,17 +17,17 @@
                 <div class="modal-body mx-3">
                     <div class="md-form mb-5">
                         <input type="text" name="name" id="login_name" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="login_name">Name</label>
+                        <label data-error="wrong" data-success="right" for="login_name"><%- _lang("modals.login.name"); %></label>
                     </div>
 
                     <div class="md-form mb-4">
                         <input type="password" name="password" id="login_pw" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="login_pw">Password <a class="higlighted-a" data-dismiss="modal" data-toggle="modal" data-target="#modalRecoveryForm"> Password Lost?</a></label>
+                        <label data-error="wrong" data-success="right" for="login_pw"><%- _lang("modals.login.password"); %> <a class="higlighted-a" data-dismiss="modal" data-toggle="modal" data-target="#modalRecoveryForm"> <%- _lang("modals.login.passwordLost"); %></a></label>
                     </div>
 
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                    <button type="submit" name="submit" class="button btn-success" value="Absenden">Submit</button>
+                    <button type="submit" name="submit" class="button btn-success" value="<%- _lang("modals.login.button"); %>"><%- _lang("modals.login.button");%></button>
                 </div>
             </div>
         </form>
@@ -41,7 +41,7 @@
 
                 <div class="modal-header text-center">
                     <h4 class="modal-title w-100 font-weight-bold">
-                        Registrieren
+                        <%- _lang("modals.register.title"); %>
                         <br>
                         <span id="register_message" style="color:red"></span>
                     </h4>
@@ -52,22 +52,22 @@
                 <div class="modal-body mx-3">
                     <div class="md-form mb-5">
                         <input type="email" name="mail" id="register_mail" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="register_mail">E-Mail Adress</label>
+                        <label data-error="wrong" data-success="right" for="register_mail"><%- _lang("modals.register.email"); %></label>
                     </div>
 
                     <div class="md-form mb-5">
                         <input type="text" name="name" id="register_name" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="register_name">Name</label>
+                        <label data-error="wrong" data-success="right" for="register_name"><%- _lang("modals.register.name"); %></label>
                     </div>
 
                     <div class="md-form mb-4">
                         <input type="password" name="password" id="register_pw" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="register_pw">Password</label>
+                        <label data-error="wrong" data-success="right" for="register_pw"><%- _lang("modals.register.password"); %></label>
                     </div>
 
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                    <button type="submit" name="submit" class="button btn-success" value="Absenden">Submit</button>
+                    <button type="submit" name="submit" class="button btn-success" value="<%- _lang("modals.register.button"); %>"><%- _lang("modals.register.button"); %></button>
                 </div>
             </div>
         </form>
@@ -81,7 +81,7 @@
 
                 <div class="modal-header text-center">
                     <h4 class="modal-title w-100 font-weight-bold">
-                        Password Recovery
+                        <%- _lang("modals.passwordRecovery.title"); %>
                         <br>
                         <span id="recovery_message" style="color:red"></span>
                     </h4>
@@ -92,11 +92,11 @@
                 <div class="modal-body mx-3">
                     <div class="md-form mb-5">
                         <input type="text" name="name" id="recovery_mail" class="form-control validate" required>
-                        <label data-error="wrong" data-success="right" for="recovery_mail">Username</label>
+                        <label data-error="wrong" data-success="right" for="recovery_mail"><%- _lang("modals.passwordRecovery.username"); %></label>
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                    <button type="submit" name="submit" class="button btn-success" value="Absenden">Submit</button>
+                    <button type="submit" name="submit" class="button btn-success" value="Absenden"><%- _lang("modals.passwordRecovery.button"); %></button>
                 </div>
             </div>
         </form>

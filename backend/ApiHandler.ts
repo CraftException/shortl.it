@@ -98,12 +98,14 @@ router.post("/api/login", (req, res) => {
 router.get("/api/lang", (req, res) => {
     LanguageManager.initializeLang(req, res);
 
+    // Check if the language exists
     if (!LanguageManager.languageExists(req.query["lang"].toString())) {
         res.json({
             message: "Language not found"
         });
         return;
     } else {
+        // Update the language and return to the source URL
         LanguageManager.updateLanguage(res, req.query["lang"].toString());
         res.redirect(req.query["source"].toString());
     }

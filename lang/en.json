@@ -70,7 +70,6 @@
       "mail": {
         "title": "Update Mail",
         "newMail": "New Mail",
-        "updateMail": "Update Mail",
         "button": "Update Mail"
       },
       "password": {
@@ -97,8 +96,28 @@
         "delete": "Delete Link"
       },
       "detailedStats": "Detailed stats of",
-      "totalClicks": "Total Clicks:",
-      "clicks": "Clicks"
+      "totalClicks": "Total Clicks:"
+    },
+
+    "start": {
+      "title": "Get tiny, simple links",
+      "subtitle": "Why use long links?",
+      "text": "Lnkdto.link is a simple URL-Shortener, to cut your URLs. It's really inconvenient to deal with long urls, and with an URL-Shortener, like Lnkdto.link, you can create short URLs, you can give to other people. Lnkdto.link has also a very good stat-system, you can see exactly, how many clicks your shorten link got.",
+      "features": {
+        "title": "Features of lnkdto.link",
+
+        "feature1Head": "Fast & easy",
+        "feature1": "Links can be shortened with just two clicks. The link is immediately copied to the clipboard.",
+
+        "feature2Head": "Statistics",
+        "feature2": "Through an account system, users can see exact statistics of their links, when the link was clicked how often.",
+
+        "feature3Head": "Simple API",
+        "feature3": "Using our simple API, lnkdto.link can be implemented in any type of applications. You can find the documentation <a href='#'> here </a>",
+
+        "feature4Head": "Open-Source",
+        "feature4": "The entire source code of lnkdto.link is available <a href='https://github.com/CraftException/lnkdto.link'>here</a>."
+      }
     }
   }
 }

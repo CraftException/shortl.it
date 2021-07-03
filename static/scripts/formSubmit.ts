@@ -7,10 +7,6 @@ $("#url_shorting").submit(() => { //@ts-ignore
     }
 });
 
-$("#longUrlField").click(() => {
-    $("#longUrlMessage").html("Long URL");
-});
-
 function handleUrlShorting() {
     $.ajax({
         url: "/api/getShortUrl",

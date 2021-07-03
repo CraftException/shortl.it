@@ -23,7 +23,7 @@
     },
 
     "header": {
-      "longUrl": "Lange URL",
+      "longUrl": "Vollständige URL",
       "button": "Link kürzen"
     },
 
@@ -50,7 +50,6 @@
     },
 
     "navbar": {
-      "brand": "lnkdto.link (beta)",
       "home": "Startseite",
       "account": {
         "account": "Account",
@@ -96,8 +95,28 @@
         "delete": "Link löschen"
       },
       "detailedStats": "Statisiken von",
-      "totalClicks": "Gesamte Aufrufe:",
-      "clicks": "Aufrufe"
+      "totalClicks": "Gesamte Aufrufe:"
+    },
+
+    "start": {
+      "title": "Kürze deine Links auf ein Minimum",
+      "subtitle": "Warum lange Links?",
+      "text": "Lnkdto.link ist ein einfacher URL-Shorter, um URLs zu kürzen. Da Links oftmals unüberschaubar lang werden, kann lnkdto.link diese auf einen kleinen Link reduzieren. Außerdem verfügt lnkdto.link über ein übersichtliches Statistik-System um genau zu überprüfen wie oft ein Link genutzt wurde.\n\n",
+      "features": {
+        "title": "Features von lnkdto.link",
+
+        "feature1Head": "Schnell & simpel",
+        "feature1": "Mit nur zwei Clicks können Links gekürzt werden. Der Link wird sofort in die Zwischenablage kopiert.",
+
+        "feature2Head": "Statistik",
+        "feature2": "Durch ein Account-System können User genaue Statistiken ihrer Links einsehen, wann der Link wie oft angeklickt wurde.",
+
+        "feature3Head": "Einfache API",
+        "feature3": "Durch einfach API-Schnittstellen kann lnkdto.link in jede Art von App implementiert werden. Ein Dokumentation findest du <a href='#'>hier</a>",
+
+        "feature4Head": "Quelloffen",
+        "feature4": "Der Gesamte Quellcode von lnkdto.link ist <a href='https://github.com/CraftException/lnkdto.link'>hier</a> verfügbar."
+      }
     }
   }
 }

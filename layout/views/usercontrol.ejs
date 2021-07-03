@@ -1,5 +1,5 @@
 <center style="margin-top: 50px">
-    <h1>Your shorten URLs</h1>
+    <h1><%- _lang("overview.title"); %></h1>
 
     <% if (content.length > 0) { %>
     <section class="columns">
@@ -11,11 +11,11 @@
                 <div>
                     <h5><%= url.longUrl %></h5>
                     <h3 id="shortLink<%= url.shortUrl %>"><%= url.shortUrl %></h3>
-                    <button id="showDetailedStats<%= url.shortUrl %>">Show detailed Stats</button><br><br>
+                    <button id="showDetailedStats<%= url.shortUrl %>"><%- _lang("overview.buttons.stats"); %></button><br><br>
                     <table>
                         <tr>
-                            <td><button id="open<%= url.shortUrl %>">Open Link</button></td>
-                            <td><button id="delete<%= url.shortUrl %>">Delete Link</button></td>
+                            <td><button id="open<%= url.shortUrl %>"><%- _lang("overview.buttons.open"); %></button></td>
+                            <td><button id="delete<%= url.shortUrl %>"><%- _lang("overview.buttons.delete"); %></button></td>
                         </tr>
                     </table>
                     <br><br>
@@ -26,15 +26,15 @@
         </div>
 
         <div class="column">
-            <h3>Detailed stats of <b id="currentDetailedStats"></b></h3>
-            <h4>Total Clicks: <b id="totalClicks"></b></h4>
+            <h3><%- _lang("overview.detailedStats"); %> <b id="currentDetailedStats"></b></h3>
+            <h4><%- _lang("overview.totalClicks"); %> <b id="totalClicks"></b></h4>
             <canvas id="chart"></canvas>
         </div>
 
     </section>
 
     <% } else { %>
-        <h1>There are no URLs to show!</h1>
+        <h1><%- _lang("overview.noURLs"); %></h1>
     <% } %>
 </center>
 
