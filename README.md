@@ -18,14 +18,14 @@ Current Version: Beta 2.0
  - URL-Shortening
  - Account-System (Login / Register)
  - User detail editing
+ - Multi-Language Support
 
 ### In work
  - Better Stat-Management
- - Homepage
+ - Password recovery
 
 ### For future updates
- - Password recovery
+ - Custom Codes / Domains
  - Private URLs (Only accessible with a password)
- - Multi-Language Support
 
 _Developed with <3 by <a href="https://github.com/CraftException">Craftexception</a> for <a href="https://jusoft.dev">JuSoft</a>_
