@@ -20,9 +20,9 @@ router.get("/view/stats", (req, res) => {
     res.render("views/stats", {});
 })
 
-router.get("/view/usercontrol", (req, res) => {
+router.get("/view/usercontrol", async (req, res) => {
     if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined')
-        res.render("views/usercontrol", {content: UrlHelper.getUrlsFromUser(SessionHandler.getStorage(req)["username"])});
+        res.render("views/usercontrol", {content: await UrlHelper.getUrlsFromUser(SessionHandler.getStorage(req)["username"])});
     else
         res.end("You are not logged in");
 })

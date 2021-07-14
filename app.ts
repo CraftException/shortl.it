@@ -38,9 +38,9 @@ app.use(viewRouter);
 app.use("/assets", express.static(path.resolve(`${__dirname}/static`)));
 
 // Redirect to specific long url
-app.get("*", (req, res) => {//@ts-ignore
-    if (UrlHelper.urlExists(req.url.substring(1))) { //@ts-ignore
-        res.redirect(UrlHelper.getLongUrl(req.url.substring(1), true));
+app.get("*", async (req, res) => {//@ts-ignore
+    if (await UrlHelper.urlExists(req.url.substring(1))) { //@ts-ignore
+        res.redirect(await UrlHelper.getLongUrl(req.url.substring(1), true));
     } else {
         res.redirect("/");
     }

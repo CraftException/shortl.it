@@ -27,18 +27,20 @@ export module UserHelper {
     }
 
     // Check if a mail exists
-    export function mailExists(mail:string):boolean {
-        return DatabaseHelper.selectData(database, "User", {mail:mail}, {}).length > 0
+    export async function mailExists(mail:string):Promise<boolean> {
+        var result = await DatabaseHelper.selectData(database, "User", {mail:mail}, {})
+        return result.length > 0
     }
 
     // Check if a username Exists
-    export function usernameExists(displayname:string):boolean {
-        return DatabaseHelper.selectData(database, "User", {displayname:displayname}, {}).length > 0
+    export async function usernameExists(displayname:string):Promise<boolean> {
+        var result = await DatabaseHelper.selectData(database, "User", {displayname:displayname}, {})
+        return result.length > 0
     }
 
     // Get an account
-    export function getAccount(name):User {
-        return DatabaseHelper.selectData(database, "User", {displayname:name}, {})[0]
+    export async function getAccount(name):Promise<User> {
+        return (await DatabaseHelper.selectData(database, "User", {displayname:name}, {}))[0]
     }
 
     // Get an account by mail
@@ -81,8 +83,8 @@ export module UrlHelper {
     }
 
     // Create a shorten URL
-    export function generateUrl(longURL:string, id:string):string {
-        var shortUrl = generateURL();
+    export async function generateUrl(longURL:string, id:string):Promise<string> {
+        var shortUrl = await generateURL();
         DatabaseHelper.insertData(database, "urls", {
             longUrl: longURL,
             shortUrl: shortUrl,
@@ -94,33 +96,34 @@ export module UrlHelper {
     }
 
     // Generate a short Url
-    function generateURL() {
+    async function generateURL() {
         var shortUrl = generateRandomString(6);
-        if (urlExists(shortUrl))
+        if (await urlExists(shortUrl))
             return generateURL();
         else
             return shortUrl;
     }
 
     // Get all Urls from a specific user
-    export function getUrlsFromUser(id:string):ShortUrl[] {
-        return DatabaseHelper.selectData(database, "urls", {user:id}, {});
+    export async function getUrlsFromUser(id: string):Promise<ShortUrl[]> {
+        return await DatabaseHelper.selectData(database, "urls", {user: id}, {});
     }
 
     // Get the data of a specific url
-    export function getUrlData(shortUrl:string):ShortUrl {
-        return DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl}, {})[0];
+    export async function getUrlData(shortUrl:string): Promise<ShortUrl> {
+        return (await DatabaseHelper.selectData(database, "urls", {shortUrl: shortUrl}, {}))[0];
     }
 
     // Check if an url exists
-    export function urlExists(shortUrl:string):boolean {
-        return DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl}, {}).length > 0;
+    export async function urlExists(shortUrl:string):Promise<boolean> {
+        var result = await DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl}, {})
+        return result.length > 0;
     }
 
     // Get the long url of a shorten link
-    export function getLongUrl(shortUrl:string, countHits:boolean):string|boolean {
+    export async function getLongUrl(shortUrl:string, countHits:boolean):Promise<string | boolean> {
         if (urlExists(shortUrl)) {
-            const fetchedUrl:ShortUrl = getUrlData(shortUrl);
+            const fetchedUrl:ShortUrl = await getUrlData(shortUrl);
 
             // Update Count Data,
             if (countHits) {
@@ -131,7 +134,7 @@ export module UrlHelper {
                 } else {
                     fetchedUrl.clickTime[currentDate] += 1;
                 }
-                DatabaseHelper.updateData(database, "urls", {longUrl:fetchedUrl.longUrl}, {$set:fetchedUrl})
+                await DatabaseHelper.updateData(database, "urls", {longUrl:fetchedUrl.longUrl}, {$set:{ clickTime: fetchedUrl.clickTime, clicks: fetchedUrl.clicks }})
             }
 
             return fetchedUrl.longUrl;
@@ -142,8 +145,9 @@ export module UrlHelper {
     }
 
     // Check if a user has access to an url
-    export function hasUserAccessToUrl(shortUrl:string, id:string) {
-        return DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl,user:id}, {}).length > 0
+    export async function hasUserAccessToUrl(shortUrl:string, id:string):Promise<boolean> {
+        var result =  await DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl,user:id}, {})
+        return result.length > 0;
     }
 
     // Delete an Url
@@ -167,8 +171,9 @@ export module RecoveryHelper {
     }
 
     // Check if a token exists
-    export function tokenExists (token:string):boolean {
-        return DatabaseHelper.selectData(database, "recovery", {token: token}, {}).length > 0
+    export async function tokenExists (token:string):Promise<boolean> {
+        var result = await DatabaseHelper.selectData(database, "recovery", {token: token}, {})
+        return result.length > 0;
     }
 
     // Get the email by a Token
@@ -182,32 +187,16 @@ export module RecoveryHelper {
 export module DatabaseHelper {
 
     // Select Data from a database
-    export function selectData(db_name:string, collection:string, query, sort) {
-        // Generate Result
-        let result = null
+    export async function selectData(db_name:string, collection:string, query, sort):Promise<any[]> {
 
         // Connect to DB
-        mongodb.MongoClient.connect(mongouri, function(err, db) {
-            if (err) throw err;
+        var db = await mongodb.MongoClient.connect(mongouri);
+        var dbo = db.db(db_name);
 
-            // Get Database
-            var dbo = db.db(db_name);
+        var result = await dbo.collection(collection).find(query).sort(sort).toArray();
 
-            // Get Collection and query Data
-            dbo.collection(collection).find(query).sort(sort).toArray(function(err, data) {
-                if (err) throw err;
-                // Set Data
-                result = data
-
-                // Close Database
-                db.close();
-            });
-
-        });
-
-        // Return list, when content is loaded
-        while((result == null)) { deasync.runLoopOnce(); }
-        return result
+        db.close();
+        return result;
     }
 
     // Update Data from a database

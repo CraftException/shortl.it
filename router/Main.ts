@@ -52,9 +52,9 @@ function getContainerParameters(req, navbarWithForm:boolean, view:string) {
     };
 }
 
-router.get("/extension", (req, res) => {
+router.get("/extension", async (req, res) => {
     res.render("extension", {
-        content: UrlHelper.getUrlsFromUser(SessionHandler.getStorage(req)["username"]),
+        content: await UrlHelper.getUrlsFromUser(SessionHandler.getStorage(req)["username"]),
         isLoggedIn: typeof SessionHandler.getStorage(req)["username"] !== 'undefined'
     });
 });

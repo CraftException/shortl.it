@@ -29,31 +29,32 @@ router.get("/api", (req, res) => {
 });
 
 // Get stats
-router.get("/api/stats", (req, res) => {
+router.get("/api/stats", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // Calculate Clicks
     var clicks = 0;
-    DatabaseHelper.selectData(database, "urls", {}, {}).forEach(data => clicks += data.clicks);
+    (await DatabaseHelper.selectData(database, "urls", {}, {})).forEach(data => clicks += data.clicks);
 
     // Calculate mostClicks
     var mostClicks = 0;
-    DatabaseHelper.selectData(database, "urls", {}, {}).forEach(data => {
+    (await DatabaseHelper.selectData(database, "urls", {}, {})).forEach(data => {
         if (data.clicks > mostClicks)
             mostClicks = data.clicks
     });
 
+    // @ts-ignore
     res.json({
         message: "OK",
-        shortenUrls: DatabaseHelper.selectData(database, "urls", {}, {}).length,
-        users: DatabaseHelper.selectData(database, "User", {}, {}).length,
+        shortenUrls: (await DatabaseHelper.selectData(database, "urls", {}, {})).length,
+        users: (await DatabaseHelper.selectData(database, "User", {}, {})).length,
         clicks: clicks,
         mostClicks: mostClicks
     })
 });
 
 // Login Handler
-router.post("/api/login", (req, res) => {
+router.post("/api/login", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // Get Information
@@ -70,7 +71,7 @@ router.post("/api/login", (req, res) => {
     }
 
     // Check if the user exists
-    if (!UserHelper.usernameExists(username)) {
+    if (!(await UserHelper.usernameExists(username))) {
         res.json({
             message: "User does not exists"
         });
@@ -78,7 +79,8 @@ router.post("/api/login", (req, res) => {
     }
 
     // Check if the password is correct
-    const user:User = UserHelper.getAccount(username);
+    const user:User = await UserHelper.getAccount(username);
+    console.log(user);
     if (!hashing.verify(password, user.password)) {
         // The password is wrong
         res.json({
@@ -130,7 +132,7 @@ router.get("/api/isLoggedIn", (req, res) => {
 });
 
 // Register a new account
-router.post("/api/register", (req, res) => {
+router.post("/api/register", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // Get information
@@ -146,7 +148,7 @@ router.post("/api/register", (req, res) => {
         });
     } else {
         // Check if the user already exists
-        if (UserHelper.usernameExists(username) || UserHelper.mailExists(email) || username === "___") {
+        if (await UserHelper.usernameExists(username) || await UserHelper.mailExists(email) || username === "___") {
             res.json({
                 message: "Already exists"
             });
@@ -154,7 +156,7 @@ router.post("/api/register", (req, res) => {
         }
 
         // Create the account
-        UserHelper.createAccount({
+        await UserHelper.createAccount({
             password: hashing.generate(password),
             mail: email,
             displayname: username
@@ -169,18 +171,18 @@ router.post("/api/register", (req, res) => {
 });
 
 // Get the short url
-router.post("/api/getShortUrl", (req, res) => {
+router.post("/api/getShortUrl", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     const longURL = req.body["longUrl"];
     res.json({
        message: "OK",
-       shortUrl: UrlHelper.generateUrl(longURL, typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___")
+       shortUrl: await UrlHelper.generateUrl(longURL, typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___")
     });
 });
 
 // Get the long url
-router.post("/api/getLongUrl", (req, res) => {
+router.post("/api/getLongUrl", async(req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // Get information
@@ -188,7 +190,7 @@ router.post("/api/getLongUrl", (req, res) => {
     const countHits = req.body["countHits"];
 
     // Check if the url exists
-    if (!(UrlHelper.urlExists(shortUrl))) {
+    if (!(await UrlHelper.urlExists(shortUrl))) {
         // The url does not exists
         res.json({
             message: "URL not exists"
@@ -197,30 +199,30 @@ router.post("/api/getLongUrl", (req, res) => {
         // Return long url
         res.json({
             message: "OK",
-            longUrl: UrlHelper.getLongUrl(shortUrl, countHits)
+            longUrl: await UrlHelper.getLongUrl(shortUrl, countHits)
         });
     }
 });
 
 // Get the information about a short url
-router.post("/api/urlInfo", (req, res) => {
+router.post("/api/urlInfo", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // Get information
     const shortUrl = req.body["shortUrl"];
 
     // Check if the url exists
-    if (!(UrlHelper.urlExists(shortUrl))) {
+    if (!(await UrlHelper.urlExists(shortUrl))) {
         // The url does not exists
         res.json({
             message: "URL not exists"
         });
     } else {
         // Check if the user ahs access to an url
-        if (UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])) {
+        if (await UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])) {
             res.json({
                 message: "OK",
-                data: UrlHelper.getUrlData(shortUrl)
+                data: await UrlHelper.getUrlData(shortUrl)
             });
         } else {
             // The user does not have access to this url
@@ -232,21 +234,21 @@ router.post("/api/urlInfo", (req, res) => {
 });
 
 // Delete an Url
-router.post("/api/deleteUrl", (req, res) => {
+router.post("/api/deleteUrl", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // Get information
     const shortUrl = req.body["shortUrl"];
 
     // Check if the url exists
-    if (!(UrlHelper.urlExists(shortUrl))) {
+    if (!(await UrlHelper.urlExists(shortUrl))) {
         // The url does not exists
         res.json({
             message: "URL not exists"
         });
     } else {
         // Check if the user ahs access to an url
-        if (UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])) {
+        if (await UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])) {
             // Delete the Url
             UrlHelper.deleteUrl(shortUrl);
 
@@ -263,7 +265,7 @@ router.post("/api/deleteUrl", (req, res) => {
 });
 
 // Get all urls from an user
-router.post("/api/getUserUrls", (req, res) => {
+router.post("/api/getUserUrls", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // Check if the user is logged in
@@ -271,7 +273,7 @@ router.post("/api/getUserUrls", (req, res) => {
         // Return urls
         res.json({
             message: "OK",
-            data: UrlHelper.getUrlsFromUser(SessionHandler.getSessionID(req))
+            data: await UrlHelper.getUrlsFromUser(SessionHandler.getSessionID(req))
         });
     } else {
         // The user isn't logged in
@@ -282,7 +284,7 @@ router.post("/api/getUserUrls", (req, res) => {
 });
 
 // Check if a user has access to an url
-router.post("/api/hasUserAccessToUrl", (req, res) => {
+router.post("/api/hasUserAccessToUrl", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // The user does not have access to an url
@@ -293,7 +295,7 @@ router.post("/api/hasUserAccessToUrl", (req, res) => {
         // Return if the user has access to this url
         res.json({
             message: "OK",
-            data: UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])
+            data: await UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])
         });
     } else {
         // The user is not logged in
@@ -304,7 +306,7 @@ router.post("/api/hasUserAccessToUrl", (req, res) => {
 });
 
 // Change a user account
-router.post("/api/changeData", (req, res) => {
+router.post("/api/changeData", async (req, res) => {
     SessionHandler.initializeSession(req, res);
 
     // The new userdata
@@ -315,7 +317,7 @@ router.post("/api/changeData", (req, res) => {
     if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined') {
         // Check if the mail has to been changed
         if (typeof newMailData !== 'undefined') {
-            UserHelper.updateMail(SessionHandler.getStorage(req)["username"], newMailData);
+            await UserHelper.updateMail(SessionHandler.getStorage(req)["username"], newMailData);
 
             // Return that the mail has been changed
             res.json({
@@ -325,7 +327,7 @@ router.post("/api/changeData", (req, res) => {
 
         // Check if the password has to been changed
         if (typeof newPasswordData !== 'undefined') {
-            UserHelper.updatePassword(SessionHandler.getStorage(req)["username"], hashing.generate(newPasswordData));
+            await  UserHelper.updatePassword(SessionHandler.getStorage(req)["username"], hashing.generate(newPasswordData));
 
             // Return if the password has been changed
             res.json({
@@ -342,18 +344,18 @@ router.post("/api/changeData", (req, res) => {
 });
 
 // Request a password change
-router.post("/api/requestPasswordChange", (req, res) => {
+router.post("/api/requestPasswordChange", async (req, res) => {
     if (!(typeof SessionHandler.getStorage(req)["username"] !== 'undefined')) {
         // Get recovery mail
         const username = req.body["username"];
 
         // Check if the provided mail does exists
-        if (UserHelper.usernameExists(username)) {
+        if (await UserHelper.usernameExists(username)) {
             // Get the username
-            const mail = UserHelper.getAccount(username).mail;
+            const mail = (await UserHelper.getAccount(username)).mail;
 
             // Generate a token
-            const token = RecoveryHelper.createToken(mail);
+            const token = await RecoveryHelper.createToken(mail);
 
             // Send the mail
             sendRecoveryMail(mail, {
