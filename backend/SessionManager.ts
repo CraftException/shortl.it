@@ -48,6 +48,11 @@ export module SessionHandler {
         return storage[CookieAPI.getCookies(req, SESSION_COOKIE_KEY)];
     }
 
+    // Logout all Users with a specific ID
+    export function deleteAllWithUsername(username) {
+        Object.keys(Object.entries(storage).filter(([key, value]) => value.username === username)).forEach(session => delete storage[session]);
+    }
+
 }
 
 // API for Cookie Handling

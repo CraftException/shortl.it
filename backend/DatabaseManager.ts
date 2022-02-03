@@ -8,7 +8,7 @@ import * as fs from "fs";
 import * as mongodb from "mongodb";
 
 // Import DeASync
-import * as deasync from "deasync";
+import {generateRandomString} from "./NumberGenerator";
 
 // The MongoDB File
 const mongouri = fs.readFileSync("backend/mongouri.txt", "utf-8");
@@ -23,13 +23,11 @@ export module UserHelper {
     export interface User {
         displayname:string,
         mail:string,
-        password:string
-    }
+        profilePicture:string,
+        createdAt:Date,
 
-    // Check if a mail exists
-    export async function mailExists(mail:string):Promise<boolean> {
-        var result = await DatabaseHelper.selectData(database, "User", {mail:mail}, {})
-        return result.length > 0
+        password:string,
+        permissionLevel:"Administrator"|"Premium"|"Default"
     }
 
     // Check if a username Exists
@@ -43,116 +41,117 @@ export module UserHelper {
         return (await DatabaseHelper.selectData(database, "User", {displayname:name}, {}))[0]
     }
 
-    // Get an account by mail
-    export function getAccountByMail(mail):User {
-        return DatabaseHelper.selectData(database, "User", {mail:mail}, {})[0]
-    }
-
     // Create an Account
     export function createAccount(user:User) {
         DatabaseHelper.insertData(database, "User", user)
     }
 
-    // Update Mail
-    export function updateMail(displayName:string, newMail:string) {
-        DatabaseHelper.updateData(database, "User", {displayname:displayName}, {$set:{mail:newMail}})
-    }
-
     // Update Password
-    export function updatePassword(displayName:string, password:string) {
-        DatabaseHelper.updateData(database, "User", {displayname:displayName}, {$set:{password:password}})
+    export function updateUser(displayName:string, newUser:User) {
+        DatabaseHelper.updateData(database, "User", {displayname:displayName}, {$set:newUser})
     }
 
-    // Upload a Password with a mail parameter
-    export function updatePasswordByMail(mail:string, password:string) {
-        DatabaseHelper.updateData(database, "User", {mail:mail}, {$set:{password:password}})
+    // Delete an Account
+    export function deleteUser(displayName:string) {
+        DatabaseHelper.deleteData(database, "User", {displayName:displayName});
     }
 
 }
 
 // API for URL Management
 export module UrlHelper {
-
     // Shorten-URL Model
-    export interface ShortUrl {
-        longUrl:string,
-        shortUrl:string,
-        user:string,
-        clicks:number,
-        clickTime:object[]
+    export interface Url {
+        target:string,
+        label:string,
+        domain: string
+        statistics:UrlStatistics,
+        creator:string,
+        access:string[],
+        password:string|null
     }
 
-    // Create a shorten URL
-    export async function generateUrl(longURL:string, id:string):Promise<string> {
-        var shortUrl = await generateURL();
-        DatabaseHelper.insertData(database, "urls", {
-            longUrl: longURL,
-            shortUrl: shortUrl,
-            user: id,
-            clicks: 0,
-            clickTime: {}
-        });
-        return shortUrl;
-    }
-
-    // Generate a short Url
-    async function generateURL() {
-        var shortUrl = generateRandomString(6);
-        if (await urlExists(shortUrl))
-            return generateURL();
-        else
-            return shortUrl;
-    }
-
-    // Get all Urls from a specific user
-    export async function getUrlsFromUser(id: string):Promise<ShortUrl[]> {
-        return await DatabaseHelper.selectData(database, "urls", {user: id}, {});
-    }
-
-    // Get the data of a specific url
-    export async function getUrlData(shortUrl:string): Promise<ShortUrl> {
-        return (await DatabaseHelper.selectData(database, "urls", {shortUrl: shortUrl}, {}))[0];
-    }
-
-    // Check if an url exists
-    export async function urlExists(shortUrl:string):Promise<boolean> {
-        var result = await DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl}, {})
-        return result.length > 0;
-    }
-
-    // Get the long url of a shorten link
-    export async function getLongUrl(shortUrl:string, countHits:boolean):Promise<string | boolean> {
-        if (urlExists(shortUrl)) {
-            const fetchedUrl:ShortUrl = await getUrlData(shortUrl);
-
-            // Update Count Data,
-            if (countHits) {
-                fetchedUrl.clicks += 1;
-                const currentDate = new Date().toLocaleDateString("de-DE");
-                if (!fetchedUrl.clickTime[currentDate]) {
-                    fetchedUrl.clickTime[currentDate] = 1;
-                } else {
-                    fetchedUrl.clickTime[currentDate] += 1;
-                }
-                await DatabaseHelper.updateData(database, "urls", {longUrl:fetchedUrl.longUrl}, {$set:{ clickTime: fetchedUrl.clickTime, clicks: fetchedUrl.clicks }})
-            }
-
-            return fetchedUrl.longUrl;
-        } else {
-            // Fallback, if the url doesn't exists
-            return false;
+    // Url Statistic Model
+    export interface UrlStatistics {
+        clicks:[],
+        totalClicks:number,
+        operationSystem:{
+            "windows": number,
+            "macos": number,
+            "linux": number,
+            "android": number,
+            "ios": number,
+            "other": number
+        }
+        "platforms": {
+            "desktop": number,
+            "mobile": number,
+            "other": number
         }
     }
 
-    // Check if a user has access to an url
-    export async function hasUserAccessToUrl(shortUrl:string, id:string):Promise<boolean> {
-        var result =  await DatabaseHelper.selectData(database, "urls", {shortUrl:shortUrl,user:id}, {})
-        return result.length > 0;
+    export module Codes {
+
+        export async function getCode(target:string):Promise<string> {
+            var code = (await DatabaseHelper.selectData(database, "codes", {target: target}, {}))[0];
+            if (!code)
+                await DatabaseHelper.insertData(database, "codes", {
+                    target: target,
+                    code: generateRandomString(6)
+                });
+
+            return code.code;
+        }
+
+        export async function codeExists(target:string):Promise<boolean> {
+            return (await DatabaseHelper.selectData(database, "codes", {target: target}, {}))[0];
+        }
+
+        export async function getTarget(code:string):Promise<string> {
+            var target = (await DatabaseHelper.selectData(database, "codes", {code: code}, {}))[0];
+            if (!target)
+                return "?"
+
+            return target.target;
+        }
+
     }
 
-    // Delete an Url
-    export function deleteUrl(shortUrl:string) {
-        DatabaseHelper.deleteData(database, "urls", {shortUrl: shortUrl});
+    export module Urls {
+
+        export async function getUrl(label:string, domain:string|null):Promise<Url | false> {
+            if (!(await urlExists(label, domain)))
+                return false;
+
+            return (await DatabaseHelper.selectData(database, "urls", {label: label, domain: domain}, {}))[0];
+        }
+
+        export async function generateUrl(url:Url) {
+            if (await urlExists(url.label, url.domain))
+                return;
+
+            await DatabaseHelper.insertData(database, "urls", url);
+        }
+
+        export async function updateUrl(label:string, domain:string|null, url:Url) {
+            if (!(await urlExists(label, domain)))
+                return;
+
+            return await DatabaseHelper.updateData(database, "urls", {label: label, domain: domain}, {$set: url});
+        }
+
+        export async function deleteUrl(label:string, domain:string|null) {
+            if (!(await urlExists(label, domain)))
+                return;
+
+            return await DatabaseHelper.deleteData(database, "urls", {label: label, domain: domain});
+        }
+
+        export async function urlExists(label:string, domain:string|null):Promise<boolean> {
+            var url = (await DatabaseHelper.selectData(database, "urls", {label: label, domain: domain}, {}))[0];
+            return !!url;
+        }
+
     }
 
 }
@@ -161,9 +160,9 @@ export module UrlHelper {
 export module RecoveryHelper {
 
     // Create a Token
-    export function createToken (mail:string) {
+    export async function createToken (mail:string) {
         const token = generateRandomString(10);
-        DatabaseHelper.insertData(database, "recovery", {
+        await DatabaseHelper.insertData(database, "recovery", {
             mail: mail,
             token: token
         })
@@ -200,76 +199,37 @@ export module DatabaseHelper {
     }
 
     // Update Data from a database
-    export function updateData(db_name:string, collection:string, query, newValues) {
+    export async function updateData(dbName:string, collection:string, query, newValues) {
         // Connect to DB
-        mongodb.MongoClient.connect(mongouri, function(err, db) {
-            if (err) throw err;
+        var db = await mongodb.MongoClient.connect(mongouri);
+        var dbo = db.db(dbName);
+        const {err} = await dbo.collection(collection).updateOne(query, newValues);
+        if (err) throw err;
 
-            // Get DB
-            var dbo = db.db(db_name);
-
-            // Update Data
-            dbo.collection(collection).updateOne(query, newValues, function(err, res) {
-                if (err) throw err;
-
-                // Close Database
-                db.close();
-            });
-
-        });
+        db.close();
     }
 
     // Delete Data from a database
-    export function deleteData(db_name:string, collection:string, query) {
+    export async function deleteData(dbName:string, collection:string, query) {
         // Connect to DB
-        mongodb.MongoClient.connect(mongouri, function(err, db) {
-            if (err) throw err;
+        var db = await mongodb.MongoClient.connect(mongouri);
+        var dbo = db.db(dbName);
+        const {err} = await dbo.collection(collection).deleteOne(query);
+        if (err) throw err;
 
-            // Get DB
-            var dbo = db.db(db_name);
-
-            // Delete Data
-            dbo.collection(collection).deleteOne(query, function(err, obj) {
-                if (err) throw err;
-
-                // Close Database
-                db.close();
-            });
-
-        });
+        db.close();
     }
 
     // Insert Data into a database
-    export function insertData(db_name:string, collection:string, data) {
+    export async function insertData(dbName:string, collection:string, data) {
         // Connect to DB
-        mongodb.MongoClient.connect(mongouri, function(err, db) {
-            if (err) throw err;
-            // Get DB
-            var dbo = db.db(db_name);
-            var dbo = db.db(db_name);
+        var db = await mongodb.MongoClient.connect(mongouri);
+        var dbo = db.db(dbName);
 
-            // Insert Data
-            dbo.collection(collection).insertOne(data, function(err, res) {
-                if (err) throw err;
-                db.close();
-            });
+        const {err} = await dbo.collection(collection).insertOne(data);
+        if (err) throw err;
 
-        });
+        db.close();
     }
 
-}
-
-// Generates a random string with a specific length
-export function generateRandomString (length:number):string {
-    var result           = [];
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-
-    for ( var i = 0; i < length; i++ ) {
-
-        result.push(characters.charAt(Math.floor(Math.random() *
-            charactersLength)));
-    }
-
-    return result.join('');
 }

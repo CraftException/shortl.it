@@ -18,20 +18,22 @@ import {sendRecoveryMail} from "./mailHelper";
 import {LanguageManager} from "./LanguageManager";
 
 // Get Router
-const router = express.Router();
+export const router = express.Router();
+
+router.get("*", (req, res, next) => {
+    SessionHandler.initializeSession(req, res);
+    next();
+});
 
 // API-Information
-router.get("/api", (req, res) => {
-    SessionHandler.initializeSession(req, res);
+router.get("/", (req, res) => {
     res.json({
         version: version
     });
 });
 
 // Get stats
-router.get("/api/stats", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
-
+router.get("/stats", async (req, res) => {
     // Calculate Clicks
     var clicks = 0;
     (await DatabaseHelper.selectData(database, "urls", {}, {})).forEach(data => clicks += data.clicks);
@@ -45,7 +47,7 @@ router.get("/api/stats", async (req, res) => {
 
     // @ts-ignore
     res.json({
-        message: "OK",
+        message: "Ok",
         shortenUrls: (await DatabaseHelper.selectData(database, "urls", {}, {})).length,
         users: (await DatabaseHelper.selectData(database, "User", {}, {})).length,
         clicks: clicks,
@@ -54,21 +56,10 @@ router.get("/api/stats", async (req, res) => {
 });
 
 // Login Handler
-router.post("/api/login", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
-
+router.post("/session", async (req, res) => {
     // Get Information
-    const username = <string>req.body["username"];
+    const username = <string>req.params["username"];
     const password = <string>req.body["password"];
-
-    // Return, if the user is already logged in
-    if (SessionHandler.getStorage(req)["username"] !== undefined) {
-        res.json({
-            message: "Already logged in",
-            username: SessionHandler.getStorage(req)["username"]
-        });
-        return;
-    }
 
     // Check if the user exists
     if (!(await UserHelper.usernameExists(username))) {
@@ -78,279 +69,251 @@ router.post("/api/login", async (req, res) => {
         return;
     }
 
-    // Check if the password is correct
     const user:User = await UserHelper.getAccount(username);
-    console.log(user);
-    if (!hashing.verify(password, user.password)) {
-        // The password is wrong
+    if (SessionHandler.getStorage(req)["username"] === undefined) {
+        // Check if the password is correct
+        if (hashing.verify(password, user.password)) {
+            SessionHandler.setSessionValue(req, "username", username);
+            res.json({
+                message: "Ok",
+            });
+            return;
+        } else {
+            // The password is wrong
+            res.json({
+                message: "Wrong Password"
+            });
+            return;
+        }
+    } else {
         res.json({
-            message: "Wrong Password"
+            message: "Already Authorized"
+        });
+    }
+});
+
+router.get("/session", async (req, res) => {
+    if (SessionHandler.getStorage(req)["username"] === undefined) {
+        res.json({
+            message: "Not authorized",
         });
         return;
-    } else {
-        // The Password is correct
-        SessionHandler.setSessionValue(req, "username", username);
+    }
+    res.redirect("/user/" + SessionHandler.getStorage(req)["username"]);
+});
+
+// Logout
+router.delete("/session", (req, res) => {
+    // Delete username
+    SessionHandler.getStorage(req)["username"] = undefined;
+
+    res.json({
+        message: "Ok"
+    });
+});
+
+// Login Handler
+router.get("/user/:user", async (req, res) => {
+    // Get Information
+    const username = <string>req.params["username"];
+
+    // Check if the user exists
+    if (!(await UserHelper.usernameExists(username))) {
         res.json({
-            message: "OK"
+            message: "User does not exists"
         });
+        return;
+    }
+
+    const user:User = await UserHelper.getAccount(username);
+    if (SessionHandler.getStorage(req)["username"] === undefined) {
+        res.json({
+            message: "Not authorized",
+        });
+    }
+
+    // Return, if the user is already logged in
+    if (SessionHandler.getStorage(req)["username"] !== undefined) {
+        if (SessionHandler.getStorage(req)["username"] === username || user.permissionLevel === "Administrator") {
+            res.json({
+                message: "Ok",
+                username: user.displayname,
+                mail: user.mail,
+                profilePicture: user.profilePicture,
+                createdAt: user.createdAt
+            });
+        } else {
+            res.json({
+                message: "Not authorized",
+            });
+        }
+        return;
     }
 });
 
 // Update the language
-router.get("/api/lang", (req, res) => {
-    LanguageManager.initializeLang(req, res);
+router.get("/api/lang/:lang", (req, res) => {
+    const lang = req.params["lang"].toString();
 
     // Check if the language exists
-    if (!LanguageManager.languageExists(req.query["lang"].toString())) {
+    if (LanguageManager.languageExists(lang)) {
+        // Update the language and return to the source URL
+        LanguageManager.updateLanguage(res, lang);
+        if (req.query["then"])
+            res.redirect(req.query["then"].toString());
+        else
+            res.json(LanguageManager.getLanguage(lang));
+    } else {
         res.json({
             message: "Language not found"
         });
-        return;
-    } else {
-        // Update the language and return to the source URL
-        LanguageManager.updateLanguage(res, req.query["lang"].toString());
-        res.redirect(req.query["source"].toString());
     }
 });
 
-// Check if the user is logged in
-router.get("/api/isLoggedIn", (req, res) => {
-    SessionHandler.initializeSession(req, res);
+const reservedUsernames = ["new", "Admin", "Administrator", "___"];
 
-    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined') {
-        // The User is logged in
+// Update a account
+router.post("/user/:user", async (req, res) => {
+    // Get Information
+    const username = <string>req.params["username"];
+
+    // Check if the user exists
+    if (!(await UserHelper.usernameExists(username))) {
         res.json({
-            message: "Already logged in",
-            username: SessionHandler.getStorage(req)["username"]
+            message: "User does not exists"
         });
-    } else {
-        // The user isn't logged in
+        return;
+    }
+
+    const oldUser:User = await UserHelper.getAccount(username);
+    if (SessionHandler.getStorage(req)["username"] === undefined) {
         res.json({
-            message: "Not logged in",
+            message: "Not authorized",
+        });
+    }
+
+    // Return, if the user is already logged in
+    if (SessionHandler.getStorage(req)["username"] !== undefined) {
+        if (SessionHandler.getStorage(req)["username"] === username || oldUser.permissionLevel === "Administrator") {
+            const newUser:User = {
+                displayname: req.body["displayname"] || oldUser.displayname,
+                mail: req.body["mail"] || oldUser.mail,
+                password: req.body["password"] || oldUser.password,
+                profilePicture: req.body["profilePicture"] || oldUser.profilePicture,
+                permissionLevel: oldUser.permissionLevel === "Administrator" ? req.body["permissionLevel"] : oldUser.permissionLevel,
+                createdAt: oldUser.createdAt
+            };
+            UserHelper.updateUser(oldUser.displayname, newUser);
+
+            res.json({
+                message: "Ok"
+            });
+        } else {
+            res.json({
+                message: "Not authorized",
+            });
+        }
+        return;
+    } else {
+        res.json({
+            message: "Already authorized",
         });
     }
 });
 
 // Register a new account
-router.post("/api/register", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
-
+router.post("/user/new", async (req, res) => {
     // Get information
-    const username = <string>req.body["username"];
-    const password = <string>req.body["password"];
-    const email = <string>req.body["email"];
+    const user:User = req.body["user"];
 
     // Fallback if the user is already logged in
     if (SessionHandler.getStorage(req)["username"] !== undefined) {
         res.json({
-            message: "Already logged in",
+            message: "Already authorized",
             username: SessionHandler.getStorage(req)["username"]
         });
     } else {
         // Check if the user already exists
-        if (await UserHelper.usernameExists(username) || await UserHelper.mailExists(email) || username === "___") {
+        if (await UserHelper.usernameExists(user.displayname) || reservedUsernames.includes(user.displayname)) {
             res.json({
-                message: "Already exists"
+                message: "Username not allowed"
             });
             return;
         }
 
         // Create the account
-        await UserHelper.createAccount({
-            password: hashing.generate(password),
-            mail: email,
-            displayname: username
-        });
+        user.password = hashing.generate(user.password);
+        await UserHelper.createAccount(user);
 
         // Log in to the account
-        SessionHandler.setSessionValue(req, "username", username);
+        SessionHandler.setSessionValue(req, "username", user.displayname);
         res.json({
-            message: "OK"
+            message: "Ok"
         });
     }
 });
 
-// Get the short url
-router.post("/api/getShortUrl", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
+// Update a account
+router.delete("/user/:user", async (req, res) => {
+    // Get Information
+    const username = <string>req.params["username"];
 
-    const longURL = req.body["longUrl"];
-    res.json({
-       message: "OK",
-       shortUrl: await UrlHelper.generateUrl(longURL, typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___")
-    });
-});
-
-// Get the long url
-router.post("/api/getLongUrl", async(req, res) => {
-    SessionHandler.initializeSession(req, res);
-
-    // Get information
-    const shortUrl = req.body["shortUrl"];
-    const countHits = req.body["countHits"];
-
-    // Check if the url exists
-    if (!(await UrlHelper.urlExists(shortUrl))) {
-        // The url does not exists
+    // Check if the user exists
+    if (!(await UserHelper.usernameExists(username))) {
         res.json({
-            message: "URL not exists"
+            message: "User does not exists"
         });
-    } else {
-        // Return long url
+        return;
+    }
+
+    const user:User = await UserHelper.getAccount(username);
+    if (SessionHandler.getStorage(req)["username"] === undefined) {
         res.json({
-            message: "OK",
-            longUrl: await UrlHelper.getLongUrl(shortUrl, countHits)
+            message: "Not authorized",
         });
     }
-});
 
-// Get the information about a short url
-router.post("/api/urlInfo", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
+    // Return, if the user is already logged in
+    if (SessionHandler.getStorage(req)["username"] !== undefined) {
+        if (SessionHandler.getStorage(req)["username"] === username || user.permissionLevel === "Administrator") {
+            UserHelper.deleteUser(username);
+            SessionHandler.deleteAllWithUsername(username);
 
-    // Get information
-    const shortUrl = req.body["shortUrl"];
-
-    // Check if the url exists
-    if (!(await UrlHelper.urlExists(shortUrl))) {
-        // The url does not exists
-        res.json({
-            message: "URL not exists"
-        });
-    } else {
-        // Check if the user ahs access to an url
-        if (await UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])) {
             res.json({
-                message: "OK",
-                data: await UrlHelper.getUrlData(shortUrl)
+                message: "Ok"
             });
         } else {
-            // The user does not have access to this url
             res.json({
-                message: "Access forbidden",
+                message: "Not authorized",
             });
         }
-    }
-});
-
-// Delete an Url
-router.post("/api/deleteUrl", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
-
-    // Get information
-    const shortUrl = req.body["shortUrl"];
-
-    // Check if the url exists
-    if (!(await UrlHelper.urlExists(shortUrl))) {
-        // The url does not exists
-        res.json({
-            message: "URL not exists"
-        });
-    } else {
-        // Check if the user ahs access to an url
-        if (await UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])) {
-            // Delete the Url
-            UrlHelper.deleteUrl(shortUrl);
-
-            res.json({
-                message: "OK"
-            });
-        } else {
-            // The user does not have access to this url
-            res.json({
-                message: "Access forbidden",
-            });
-        }
-    }
-});
-
-// Get all urls from an user
-router.post("/api/getUserUrls", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
-
-    // Check if the user is logged in
-    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined') {
-        // Return urls
-        res.json({
-            message: "OK",
-            data: await UrlHelper.getUrlsFromUser(SessionHandler.getSessionID(req))
-        });
-    } else {
-        // The user isn't logged in
-        res.json({
-            message: "Not logged in"
-        });
-    }
-});
-
-// Check if a user has access to an url
-router.post("/api/hasUserAccessToUrl", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
-
-    // The user does not have access to an url
-    const shortUrl = req.body["shortUrl"];
-
-    // Check if the user is logged in
-    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined') {
-        // Return if the user has access to this url
-        res.json({
-            message: "OK",
-            data: await UrlHelper.hasUserAccessToUrl(shortUrl, SessionHandler.getStorage(req)["username"])
-        });
-    } else {
-        // The user is not logged in
-        res.json({
-            message: "Not logged in"
-        });
-    }
-});
-
-// Change a user account
-router.post("/api/changeData", async (req, res) => {
-    SessionHandler.initializeSession(req, res);
-
-    // The new userdata
-    const newMailData = req.body["mail"];
-    const newPasswordData = req.body["password"];
-
-    // Check if the user is logged in
-    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined') {
-        // Check if the mail has to been changed
-        if (typeof newMailData !== 'undefined') {
-            await UserHelper.updateMail(SessionHandler.getStorage(req)["username"], newMailData);
-
-            // Return that the mail has been changed
-            res.json({
-                message: "OK"
-            });
-        }
-
-        // Check if the password has to been changed
-        if (typeof newPasswordData !== 'undefined') {
-            await  UserHelper.updatePassword(SessionHandler.getStorage(req)["username"], hashing.generate(newPasswordData));
-
-            // Return if the password has been changed
-            res.json({
-                message: "OK"
-            });
-        }
-
-    } else {
-        // The user is not logged in
-        res.json({
-            message: "Not logged in"
-        });
+        return;
     }
 });
 
 // Request a password change
-router.post("/api/requestPasswordChange", async (req, res) => {
-    if (!(typeof SessionHandler.getStorage(req)["username"] !== 'undefined')) {
-        // Get recovery mail
-        const username = req.body["username"];
+router.post("/user/:user/requestRecovery", async (req, res) => {
+    // Get Information
+    const username = <string>req.params["username"];
 
-        // Check if the provided mail does exists
-        if (await UserHelper.usernameExists(username)) {
+    // Check if the user exists
+    if (!(await UserHelper.usernameExists(username))) {
+        res.json({
+            message: "User does not exists"
+        });
+        return;
+    }
+
+    const oldUser:User = await UserHelper.getAccount(username);
+    if (SessionHandler.getStorage(req)["username"] === undefined) {
+        res.json({
+            message: "Not authorized",
+        });
+    }
+
+    // Return, if the user is already logged in
+    if (SessionHandler.getStorage(req)["username"] !== undefined) {
+        if (SessionHandler.getStorage(req)["username"] === username || oldUser.permissionLevel === "Administrator") {
             // Get the username
             const mail = (await UserHelper.getAccount(username)).mail;
 
@@ -364,30 +327,156 @@ router.post("/api/requestPasswordChange", async (req, res) => {
             })
 
             res.json({
-                message: "OK"
+                message: "Ok"
             });
         } else {
-            // The mail does not exists
             res.json({
-                message: "The mail does not exists"
+                message: "Not authorized",
             });
         }
+        return;
     } else {
-        // The user is already logged in
         res.json({
-            message: "The user is already logged in!"
+            message: "Already authorized",
         });
     }
 });
 
-// Logout
-router.post("/api/logout", (req, res) => {
-    // Delete username
-    SessionHandler.getStorage(req)["username"] = undefined;
 
+router.post("/url", async (req, res) => {
+    var url:UrlHelper.Url = {
+        target: req.body["target"],
+        domain: req.body["domain"] || "#",
+        label: await UrlHelper.Codes.getCode(req.body["target"]),
+        access: [typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___"],
+        password: req.body["password"] || "",
+        creator: typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___",
+        statistics: {
+            clicks: [],
+            totalClicks: 0,
+            operationSystem: {android: 0, ios: 0, windows: 0, macos: 0, linux: 0, other: 0},
+            platforms: {desktop: 0, mobile: 0, other: 0}
+        }
+    };
+
+    await UrlHelper.Urls.generateUrl(url);
     res.json({
-        message: "OK"
+        message: "Ok"
     });
 });
 
-module.exports = router;
+router.get("/url/:domain/:label", async (req, res) => {
+    const label = req.params["label"];
+    const domain = req.params["domain"];
+
+    if (!(await UrlHelper.Urls.urlExists(label, domain))) {
+        res.json({
+            message: "Url does not exist"
+        });
+        return;
+    }
+
+    const url:UrlHelper.Url = await UrlHelper.Urls.getUrl(label, domain) || null;
+    if (!url) {
+        res.json({
+            message: "An error occurred"
+        });
+        return;
+    }
+
+    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? url.creator === SessionHandler.getStorage(req)["username"] || url.access.includes(SessionHandler.getStorage(req)["username"]): url.creator === "___") {
+        res.json({
+            message: "Ok",
+            ...url
+        });
+    } else {
+        res.json({
+            message: "Not authorized"
+        });
+        return;
+    }
+
+});
+
+function getOperationSystem(req) {
+    var osName = "other";
+    if (!!req.headers['user-agent'].match(/Windows/)) osName = "windows";
+    if (!!req.headers['user-agent'].match(/macOS/)) osName = "macos";
+    if (!!req.headers['user-agent'].match(/linux/)) osName = "linux";
+    if (!!req.headers['user-agent'].match(/Android/)) osName = "android";
+    if (!!req.headers['user-agent'].match(/iPad|iPhone/)) osName = "ios";
+
+    return osName;
+}
+
+function getPlatform(req) {
+    var platform = "other";
+    if(getOperationSystem(req).match(/windows|mac|linux/)) platform = "desktop";
+    if(getOperationSystem(req).match(/android|ios/)) platform = "desktop";
+
+    return platform;
+}
+
+router.get("/url/:domain/:label/click", async (req, res) => {
+    const label = req.params["label"];
+    const domain = req.params["domain"];
+
+    if (!(await UrlHelper.Urls.urlExists(label, domain))) {
+        res.json({
+            message: "Url does not exist"
+        });
+        return;
+    }
+
+    const url:UrlHelper.Url = await UrlHelper.Urls.getUrl(label, domain) || null;
+    if (!url) {
+        res.json({
+            message: "An error occurred"
+        });
+        return;
+    }
+
+    url.statistics.totalClicks += 1;
+    const currentDate = new Date().toLocaleDateString("de-DE");
+    if (!url.statistics.clicks[currentDate]) {
+        url.statistics.clicks[currentDate] = 1;
+    } else {
+        url.statistics.clicks[currentDate] += 1;
+    }
+    url.statistics.operationSystem[getOperationSystem(req)] += 1;
+    url.statistics.platforms[getPlatform(req)] += 1;
+
+    await UrlHelper.Urls.updateUrl(label, domain, url);
+});
+
+router.delete("/url/:domain/:label", async (req, res) => {
+    const label = req.params["label"];
+    const domain = req.params["domain"];
+
+    if (!(await UrlHelper.Urls.urlExists(label, domain))) {
+        res.json({
+            message: "Url does not exist"
+        });
+        return;
+    }
+
+    const url:UrlHelper.Url = await UrlHelper.Urls.getUrl(label, domain) || null;
+    if (!url) {
+        res.json({
+            message: "An error occurred"
+        });
+        return;
+    }
+
+    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? url.creator === SessionHandler.getStorage(req)["username"] || url.access.includes(SessionHandler.getStorage(req)["username"]): url.creator === "___") {
+        await UrlHelper.Urls.deleteUrl(label, domain);
+        res.json({
+            message: "Ok"
+        });
+    } else {
+        res.json({
+            message: "Not authorized"
+        });
+        return;
+    }
+});

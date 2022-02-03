@@ -11,7 +11,7 @@ import * as path from "path";
 import * as coookieparser from "cookie-parser";
 
 // Import API-Router
-import * as apiRouter from "./backend/ApiHandler";
+import {router as ApiRouter} from "./backend/ApiHandler";
 import * as mainRouter from "./router/Main";
 import * as viewRouter from "./router/Views";
 import {UrlHelper} from "./backend/DatabaseManager";
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Import API Router
 // @ts-ignore
-app.use(apiRouter);// @ts-ignore
+app.use("/api", ApiRouter);// @ts-ignore
 app.use(mainRouter);// @ts-ignore
 app.use(viewRouter);
 
