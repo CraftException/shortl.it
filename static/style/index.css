@@ -1,14 +1,10 @@
 .navHome {
-    background-color: transparent; 
-    color: white !important;
-    position: fixed; 
-    top: 0; 
+    color: black !important;
+    position: fixed;
+    top: 0;
     width: 100%
 }
 
-.foreColorNavbar {
-    color: white;
-}
 
 .featureColumns {
     width: 87% !important;
@@ -16,29 +12,34 @@
 }
 
 .footerContainer {
-    background-color: #212121; 
-    padding-left: 5%; 
-    padding-right: 5%;
-    padding-top: 2%; 
-    padding-bottom: 1%; 
-    margin-top: 0 !important; 
+    background-color: #212121;
+    padding: 2% 5% 1%;
+    margin-top: 0 !important;
     color: white !important;
 }
 
 .imprintButton {
     text-decoration: none;
-    color: #ffffff; 
+    color: #ffffff;
     font-size: 20px;
 }
 
 .header {
-    border-bottom-right-radius: 90px !important;
+    background-color: #303030;
     width: 100% !important;
-    background-position: 0%; background-attachment: fixed;
-    background-size: cover;
-    background-image: url('https://cdn.discordapp.com/attachments/817317495299113011/844480539783069726/Zeichenflache_5.png');
-    background-position: 0%;
-    color: #000 !important;
+
+    background-image: url('/assets/images/countryBackground.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: left 160% bottom 76%;
+
     color: white !important;
     filter: brightness(100%);
+    padding: 60px 0 0 !important;
+}
+
+@media screen and (max-width: 440px) {
+    .header {
+        background-position: center center;
+    }
 }

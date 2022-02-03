@@ -24,7 +24,10 @@
 
     "header": {
       "longUrl": "Vollständige URL",
-      "button": "Link kürzen"
+      "buttons": {
+        "shortLink": "Link kürzen",
+        "options": "Erweiterte Optionen"
+      }
     },
 
     "modals": {
@@ -80,6 +83,7 @@
     },
 
     "stats": {
+      "title": "Statistiken",
       "shortenUrls": "Gekürzte URLs",
       "totalClicks": "Gesamt Aufrufe",
       "mostClicks": "Meistgeklickte URL",

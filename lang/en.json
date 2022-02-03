@@ -25,7 +25,10 @@
 
     "header": {
       "longUrl": "Long URL",
-      "button": "Create short link"
+      "buttons": {
+        "shortLink": "Create short link",
+        "options": "Other Options"
+      }
     },
 
     "modals": {
@@ -81,6 +84,7 @@
     },
 
     "stats": {
+      "title": "Statistics",
       "shortenUrls": "Shorten URLs",
       "totalClicks": "Total Clicks",
       "mostClicks": "Clicks of the URL, with most clicks",
