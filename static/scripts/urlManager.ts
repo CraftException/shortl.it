@@ -1,84 +1,47 @@
-var currentChart = null;
+var currentCharts = [];
 
 function addButtonListeners (url) {
-
-    $("#shortLink" + url.shortUrl).text(window.location.origin + "/" + url.shortUrl);
-
-    $("#open" + url.shortUrl).click(() => {
-        window.open(url.longUrl);
+    $("#open" + url.label).click(() => {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(url.domain + "/" + url.label).select();
+        document.execCommand("copy");
+        $temp.remove();
     });
 
-    $("#delete" + url.shortUrl).click(() => {
+    $("#delete" + url.label).click(() => {
         $.ajax({
-            url: "/api/deleteUrl",
-            method: "POST",
-            data: {
-                shortUrl: url.shortUrl
-            }
+            url: "/api/url/" + url.domain + "/" + url.label,
+            method: "DELETE",
+            data: {}
         }).done((data) => {
-            if (data.message == "OK") {
+            if (data.message == "Ok") {
                 document.location.reload();
             }
         });
     });
 
-    $("#showDetailedStats" + url.shortUrl).click(() => {
+    $("#showDetailedStats" + url.label).click(() => {
         showDetailedStats(url);
     });
 
 }
 
-function addExtensionButtonListeners (url) {
-
-    $("#open" + url.shortUrl).click(() => {
-        window.open(url.longUrl);
-    });
-
-    $("#delete" + url.shortUrl).click(() => {
-        $.ajax({
-            url: "/api/deleteUrl",
-            method: "POST",
-            data: {
-                shortUrl: url.shortUrl
-            }
-        }).done((data) => {
-            if (data.message == "OK") {
-                document.location.reload();
-            }
-        });
-    });
-
-    $("#copy" + url.shortUrl).click(() => {
-        var $temp = $("<input>");
-        $("body").append($temp);
-
-        $temp.val(url.longUrl).select();
-        document.execCommand("copy");
-
-        $temp.remove();
-    });
-
-    $("#stats" + url.shortUrl).click(() => {
-        window.open("user/usercontrol");
-    });
-
-}
-
 function showDetailedStats(url) {
-    showChart(Object.keys(url.clickTime), Object.values(url.clickTime));
-    $("#currentDetailedStats").text(window.location.origin + "/" + url.shortUrl);
-    $("#totalClicks").text(url.clicks);
+    showChart(url, Object.keys(url.statistics.clicks), Object.values(url.statistics.clicks));
+    $("#currentDetailedStats").text(window.location.origin + "/" + url.label);
+    $("#totalClicks").text(url.statistics.totalClicks);
 }
 
-function showChart(labels, data) {
+function showChart(url, labels, data) {
 
-    if (currentChart != null) {
-        currentChart.destroy();
-        currentChart = null;
+    if (currentCharts != []) {
+        currentCharts.forEach(chart => chart.destroy());
+        currentCharts = [];
     }
 
     //@ts-ignore
-    currentChart = new Chart(document.getElementById('chart').getContext('2d'), {
+    currentCharts.push(new Chart(document.getElementById('clickChart').getContext('2d'), {
         type: 'line',
         data: {
             datasets: [{
@@ -95,5 +58,82 @@ function showChart(labels, data) {
                 }
             }
         }
-    });
+    }));
+
+    //@ts-ignore
+    currentCharts.push(new Chart(document.getElementById('osChart').getContext('2d'), {
+        type: 'doughnut',
+        responsive: true, scaleFontColor: "#FFFFFF",
+        data: {
+            datasets: [{
+                label: 'Operation Systems',
+                data: [
+                    url.statistics.operationSystem.windows,
+                    url.statistics.operationSystem.macos,
+                    url.statistics.operationSystem.linux,
+                    url.statistics.operationSystem.android,
+                    url.statistics.operationSystem.ios,
+                    url.statistics.operationSystem.other
+                ],
+                backgroundColor: [
+                    'rgb(169,27,57)',
+                    'rgb(255,245,51)',
+                    'rgb(24,142,206)',
+                    'rgb(3,77,16)',
+                    'rgb(183,102,34)',
+                    'rgb(94,94,94)'
+                ],
+            }],
+            labels: [
+                "Windows",
+                "MacOS",
+                "Linux",
+                "Android",
+                "iOS",
+                "Other"
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    suggestedMin: 5,
+                    suggestedMax: 25
+                }
+            }
+        }
+    }));
+
+    //@ts-ignore
+    currentCharts.push(new Chart(document.getElementById('platformChart').getContext('2d'), {
+        type: 'doughnut',
+        responsive: true, scaleFontColor: "#FFFFFF",
+        data: {
+            datasets: [{
+                label: 'Operation Systems',
+                data: [
+                    url.statistics.platforms.desktop,
+                    url.statistics.platforms.mobile,
+                    url.statistics.platforms.other,
+                ],
+                backgroundColor: [
+                    'rgb(169,27,57)',
+                    'rgb(255,245,51)',
+                    'rgb(24,142,206)',
+                ],
+            }],
+            labels: [
+                "Desktop",
+                "Mobile",
+                "Others",
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    suggestedMin: 5,
+                    suggestedMax: 25
+                }
+            }
+        }
+    }));
 }

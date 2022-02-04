@@ -17,8 +17,11 @@
                             <%- _lang("navbar.account.account"); %>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navDropdown" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" onclick="loadView('usercontrol', '/user/usercontrol')"  id="shorturls"><%- _lang("navbar.account.shortenurls"); %></a>
+                            <a class="dropdown-item" onclick="loadView('domainList', '/user/domainList')"  id="shorturls"><%- _lang("navbar.account.shortenurls"); %></a>
+                            <a class="dropdown-item" onclick="loadView('short', '/user/short')"  id="short"><%- _lang("navbar.account.short"); %></a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" onclick="loadView('edituser', '/user/edituser')" id="edit_user"><%- _lang("navbar.account.edituser"); %></a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" id="logout"><%- _lang("navbar.account.logout"); %></a>
                         </div>
                     </li>
@@ -53,7 +56,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navDropdown" aria-labelledby="navbarDropdownMenuLink">
                         <% availableLangs.forEach(function (lang) { %>
-                            <a onclick="document.location.href='/api/lang?lang=<%= lang.code %>&source=' + document.location.href" class="dropdown-item" id="lang_en"><%= lang.names.long %></a>
+                            <a onclick="document.location.href='/api/lang/<%= lang.code %>?then=' + document.location.href" class="dropdown-item" id="lang_en"><%= lang.names.long %></a>
                         <% }) %>
                     </div>
                 </li>

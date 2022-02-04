@@ -1,6 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans&display=swap');
+
+*:not(i) {
+    font-family: 'DM Sans', sans-serif !important;
+}
+
 body {
     background-color: #424242 !important;
     color: white;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #222222;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #303030;
 }
 
 @media (max-width: 992px) {
@@ -154,7 +177,7 @@ button:hover:after {
 
 .higlighted-a {
     text-decoration: underline;
-    color: #0e3149;
+    color: #3bacfa;
 }
 
 a:hover {

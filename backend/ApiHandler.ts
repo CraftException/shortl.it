@@ -14,13 +14,16 @@ const {version} = require("../package.json");
 
 // Import Password Hashing
 import * as hashing from "password-hash";
+
+// Import Utils
 import {sendRecoveryMail} from "./mailHelper";
 import {LanguageManager} from "./LanguageManager";
+import {generateRandomString} from "./NumberGenerator";
 
 // Get Router
 export const router = express.Router();
 
-router.get("*", (req, res, next) => {
+router.all("*", (req, res, next) => {
     SessionHandler.initializeSession(req, res);
     next();
 });
@@ -36,13 +39,13 @@ router.get("/", (req, res) => {
 router.get("/stats", async (req, res) => {
     // Calculate Clicks
     var clicks = 0;
-    (await DatabaseHelper.selectData(database, "urls", {}, {})).forEach(data => clicks += data.clicks);
+    (await DatabaseHelper.selectData(database, "urls", {}, {})).forEach(data => clicks += data.statistics.totalClicks);
 
     // Calculate mostClicks
     var mostClicks = 0;
     (await DatabaseHelper.selectData(database, "urls", {}, {})).forEach(data => {
-        if (data.clicks > mostClicks)
-            mostClicks = data.clicks
+        if (data.statistics.totalClicks > mostClicks)
+            mostClicks = data.statistics.totalClicks
     });
 
     // @ts-ignore
@@ -56,7 +59,7 @@ router.get("/stats", async (req, res) => {
 });
 
 // Login Handler
-router.post("/session", async (req, res) => {
+router.post("/session/:username", async (req, res) => {
     // Get Information
     const username = <string>req.params["username"];
     const password = <string>req.body["password"];
@@ -152,7 +155,7 @@ router.get("/user/:user", async (req, res) => {
 });
 
 // Update the language
-router.get("/api/lang/:lang", (req, res) => {
+router.get("/lang/:lang", (req, res) => {
     const lang = req.params["lang"].toString();
 
     // Check if the language exists
@@ -172,10 +175,43 @@ router.get("/api/lang/:lang", (req, res) => {
 
 const reservedUsernames = ["new", "Admin", "Administrator", "___"];
 
+// Register a new account
+router.post("/user/new", async (req, res) => {
+    // Get information
+    const user:User = JSON.parse(req.body["user"]);
+
+    // Fallback if the user is already logged in
+    if (SessionHandler.getStorage(req)["username"] !== undefined) {
+        res.json({
+            message: "Already authorized",
+            username: SessionHandler.getStorage(req)["username"]
+        });
+    } else {
+        // Check if the user already exists
+        if (await UserHelper.usernameExists(user.displayname) || reservedUsernames.includes(user.displayname)) {
+            res.json({
+                message: "Username not allowed"
+            });
+            return;
+        }
+
+        // Create the account
+        user.permissionLevel = "Default";
+        user.password = hashing.generate(user.password);
+        await UserHelper.createAccount(user);
+
+        // Log in to the account
+        SessionHandler.setSessionValue(req, "username", user.displayname);
+        res.json({
+            message: "Ok"
+        });
+    }
+});
+
 // Update a account
 router.post("/user/:user", async (req, res) => {
     // Get Information
-    const username = <string>req.params["username"];
+    const username = req.params["username"] == "current" ? <string>req.params["username"] : SessionHandler.getStorage(req)["username"];
 
     // Check if the user exists
     if (!(await UserHelper.usernameExists(username))) {
@@ -198,7 +234,7 @@ router.post("/user/:user", async (req, res) => {
             const newUser:User = {
                 displayname: req.body["displayname"] || oldUser.displayname,
                 mail: req.body["mail"] || oldUser.mail,
-                password: req.body["password"] || oldUser.password,
+                password: req.body["password"] ? hashing.generate(req.body["password"]) : oldUser.password,
                 profilePicture: req.body["profilePicture"] || oldUser.profilePicture,
                 permissionLevel: oldUser.permissionLevel === "Administrator" ? req.body["permissionLevel"] : oldUser.permissionLevel,
                 createdAt: oldUser.createdAt
@@ -217,38 +253,6 @@ router.post("/user/:user", async (req, res) => {
     } else {
         res.json({
             message: "Already authorized",
-        });
-    }
-});
-
-// Register a new account
-router.post("/user/new", async (req, res) => {
-    // Get information
-    const user:User = req.body["user"];
-
-    // Fallback if the user is already logged in
-    if (SessionHandler.getStorage(req)["username"] !== undefined) {
-        res.json({
-            message: "Already authorized",
-            username: SessionHandler.getStorage(req)["username"]
-        });
-    } else {
-        // Check if the user already exists
-        if (await UserHelper.usernameExists(user.displayname) || reservedUsernames.includes(user.displayname)) {
-            res.json({
-                message: "Username not allowed"
-            });
-            return;
-        }
-
-        // Create the account
-        user.password = hashing.generate(user.password);
-        await UserHelper.createAccount(user);
-
-        // Log in to the account
-        SessionHandler.setSessionValue(req, "username", user.displayname);
-        res.json({
-            message: "Ok"
         });
     }
 });
@@ -294,7 +298,7 @@ router.delete("/user/:user", async (req, res) => {
 // Request a password change
 router.post("/user/:user/requestRecovery", async (req, res) => {
     // Get Information
-    const username = <string>req.params["username"];
+    const username = <string>req.params["user"];
 
     // Check if the user exists
     if (!(await UserHelper.usernameExists(username))) {
@@ -304,36 +308,25 @@ router.post("/user/:user/requestRecovery", async (req, res) => {
         return;
     }
 
-    const oldUser:User = await UserHelper.getAccount(username);
-    if (SessionHandler.getStorage(req)["username"] === undefined) {
-        res.json({
-            message: "Not authorized",
-        });
-    }
+    const user:User = await UserHelper.getAccount(username);
 
     // Return, if the user is already logged in
-    if (SessionHandler.getStorage(req)["username"] !== undefined) {
-        if (SessionHandler.getStorage(req)["username"] === username || oldUser.permissionLevel === "Administrator") {
-            // Get the username
-            const mail = (await UserHelper.getAccount(username)).mail;
+    if (SessionHandler.getStorage(req)["username"] === undefined) {
+        // Get the username
+        const mail = user.mail;
 
-            // Generate a token
-            const token = await RecoveryHelper.createToken(mail);
+        // Generate a token
+        const token = await RecoveryHelper.createToken(mail);
 
-            // Send the mail
-            sendRecoveryMail(mail, {
-                username: username,
-                link: "https://lnkdto.link/resetPassword?token=" + token
-            })
+        // Send the mail
+        sendRecoveryMail(mail, {
+            username: username,
+            link: "https://lnkdto.link/resetPassword?token=" + token
+        })
 
-            res.json({
-                message: "Ok"
-            });
-        } else {
-            res.json({
-                message: "Not authorized",
-            });
-        }
+        res.json({
+            message: "Ok"
+        });
         return;
     } else {
         res.json({
@@ -344,24 +337,46 @@ router.post("/user/:user/requestRecovery", async (req, res) => {
 
 
 router.post("/url", async (req, res) => {
-    var url:UrlHelper.Url = {
-        target: req.body["target"],
-        domain: req.body["domain"] || "#",
-        label: await UrlHelper.Codes.getCode(req.body["target"]),
-        access: [typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___"],
-        password: req.body["password"] || "",
-        creator: typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___",
-        statistics: {
-            clicks: [],
-            totalClicks: 0,
-            operationSystem: {android: 0, ios: 0, windows: 0, macos: 0, linux: 0, other: 0},
-            platforms: {desktop: 0, mobile: 0, other: 0}
-        }
-    };
+    const label = generateRandomString(6);
+    var url: UrlHelper.Url = null;
+    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined') {
+        url = {
+            target: req.body["target"],
+            domain: req.body["domain"] || req.get('host'),
+            label: req.body["label"] || label,
+            access: [],
+            password: req.body["password"] != "" && req.body["password"] ? hashing.generate(req.body["password"]) : null,
+            creator: typeof SessionHandler.getStorage(req)["username"] !== 'undefined' ? SessionHandler.getStorage(req)["username"] : "___",
+            statistics: {
+                clicks: {},
+                totalClicks: 0,
+                operationSystem: {android: 0, ios: 0, windows: 0, macos: 0, linux: 0, other: 0},
+                platforms: {desktop: 0, mobile: 0, other: 0}
+            }
+        };
+    } else {
+        url = {
+            target: req.body["target"],
+            domain: req.get('host'),
+            label: label,
+            access: [],
+            password: null,
+            creator: "___",
+            statistics: {
+                clicks: [],
+                totalClicks: 0,
+                operationSystem: {android: 0, ios: 0, windows: 0, macos: 0, linux: 0, other: 0},
+                platforms: {desktop: 0, mobile: 0, other: 0}
+            }
+        };
+    }
 
     await UrlHelper.Urls.generateUrl(url);
+
     res.json({
-        message: "Ok"
+        message: "Ok",
+        domain: url.domain,
+        label: label
     });
 });
 
@@ -402,7 +417,7 @@ function getOperationSystem(req) {
     var osName = "other";
     if (!!req.headers['user-agent'].match(/Windows/)) osName = "windows";
     if (!!req.headers['user-agent'].match(/macOS/)) osName = "macos";
-    if (!!req.headers['user-agent'].match(/linux/)) osName = "linux";
+    if (!!req.headers['user-agent'].match(/Linux/)) osName = "linux";
     if (!!req.headers['user-agent'].match(/Android/)) osName = "android";
     if (!!req.headers['user-agent'].match(/iPad|iPhone/)) osName = "ios";
 
@@ -447,6 +462,7 @@ router.get("/url/:domain/:label/click", async (req, res) => {
     url.statistics.platforms[getPlatform(req)] += 1;
 
     await UrlHelper.Urls.updateUrl(label, domain, url);
+    res.redirect(url.target);
 });
 
 router.delete("/url/:domain/:label", async (req, res) => {

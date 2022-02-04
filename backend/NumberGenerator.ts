@@ -6,7 +6,7 @@ export function generateRandomString (length:number):string {
     var result = [];
 
     // All possible characters
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_$%§!?';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_';
     var charactersLength = characters.length;
 
     // Generate chars

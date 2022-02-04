@@ -1,0 +1,60 @@
+<center style="margin-top: 50px">
+    <h1><%- _lang("short.title"); %></h1>
+
+    <div class="content column" style="margin: 30px; max-width: 50%;" id="short_form">
+            <h3 id="status"></h3>
+
+            <form method="get" action="javascript:void('')" id="advanced_url_shorting">
+                <div id="longUrlField" class="form__group field">
+                    <input id="target" type="input" class="form__field" placeholder="<%- _lang("short.target"); %>" name="target" required>
+                    <label id="targetMessage" for="target" class="form__label"><%- _lang("short.target"); %></label>
+                </div>
+                <br><br><br><br>
+
+                <span style="text-align: left">
+                    <h4><%- _lang("short.domain.title"); %></h4>
+                    <p><%- _lang("short.domain.description"); %><i>https://shortl.it/</i></p>
+                </span>
+                <div id="domainField" class="form__group field">
+                    <input id="domain" type="input" class="form__field" placeholder="<%- _lang("short.domain.field"); %>" name="domain">
+                    <label id="domainMessage" for="domain" class="form__label"><%- _lang("short.domain.field"); %></label>
+                </div>
+                <br><br><br><br>
+
+                <span style="text-align: left">
+                    <h4><%- _lang("short.password.title"); %></h4>
+                    <p><%- _lang("short.password.description"); %></p>
+                </span>
+                <div id="passwordField" class="form__group field">
+                    <input id="password" type="password" class="form__field" placeholder="<%- _lang("short.password.field"); %>" name="password">
+                    <label id="passwordMessage" for="password" class="form__label"><%- _lang("short.password.field"); %></label>
+                </div>
+                <br>
+
+                <button type="submit"><%- _lang("header.buttons.shortLink"); %></button>
+            </form>
+
+    </div>
+</center>
+
+<div class="modal fade" id="urlModel" tabindex="-1" role="dialog" aria-labelledby="urlModelLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Shorten URL</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Your URL has been copied to the clipboard!<br>
+                <h2><a id="shortenUrlLink"></a></h2>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="button btn-success" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/scripts/urlShortHandler.js"></script>

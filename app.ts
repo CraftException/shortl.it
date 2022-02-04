@@ -29,18 +29,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Import API Router
-// @ts-ignore
-app.use("/api", ApiRouter);// @ts-ignore
-app.use(mainRouter);// @ts-ignore
+app.use("/api", ApiRouter); //@ts-ignore
+app.use(mainRouter); //@ts-ignore
 app.use(viewRouter);
 
 // Setup express static files
 app.use("/assets", express.static(path.resolve(`${__dirname}/static`)));
 
 // Redirect to specific long url
-app.get("*", async (req, res) => {//@ts-ignore
-    if (await UrlHelper.urlExists(req.url.substring(1))) { //@ts-ignore
-        res.redirect(await UrlHelper.getLongUrl(req.url.substring(1), true));
+app.get("*", async (req, res) => {
+    if (await UrlHelper.Urls.urlExists(req.url.substring(1), req.get('host'))) {
+        const url:UrlHelper.Url = await UrlHelper.Urls.getUrl(req.url.substring(1), req.get('host'));
+        if (url.password)
+            res.redirect("/passwordCheck/" + req.get('host') + "/" + req.url.substring(1));
+        else
+            res.redirect("/api/url/" + req.get('host') + "/" + req.url.substring(1) + "/click");
     } else {
         res.redirect("/");
     }

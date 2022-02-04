@@ -2,7 +2,7 @@
 $(document).ready(() => loadView(viewToLoad, viewToLoad));
 
 function loadView(view, url) {
-    if (view == "start" || view == "usercontrol" || view == "edituser" || view == "")
+    if (view == "start" || view == "domainList" || view == "edituser" || view == "")
         $("#header_form").show();
     else
         $("#header_form").hide();

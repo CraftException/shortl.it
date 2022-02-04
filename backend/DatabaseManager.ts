@@ -73,7 +73,7 @@ export module UrlHelper {
 
     // Url Statistic Model
     export interface UrlStatistics {
-        clicks:[],
+        clicks:object,
         totalClicks:number,
         operationSystem:{
             "windows": number,
@@ -90,40 +90,19 @@ export module UrlHelper {
         }
     }
 
-    export module Codes {
-
-        export async function getCode(target:string):Promise<string> {
-            var code = (await DatabaseHelper.selectData(database, "codes", {target: target}, {}))[0];
-            if (!code)
-                await DatabaseHelper.insertData(database, "codes", {
-                    target: target,
-                    code: generateRandomString(6)
-                });
-
-            return code.code;
-        }
-
-        export async function codeExists(target:string):Promise<boolean> {
-            return (await DatabaseHelper.selectData(database, "codes", {target: target}, {}))[0];
-        }
-
-        export async function getTarget(code:string):Promise<string> {
-            var target = (await DatabaseHelper.selectData(database, "codes", {code: code}, {}))[0];
-            if (!target)
-                return "?"
-
-            return target.target;
-        }
-
-    }
-
     export module Urls {
 
-        export async function getUrl(label:string, domain:string|null):Promise<Url | false> {
+        export async function getUrl(label:string, domain:string|null):Promise<Url> {
             if (!(await urlExists(label, domain)))
-                return false;
+                return null;
 
             return (await DatabaseHelper.selectData(database, "urls", {label: label, domain: domain}, {}))[0];
+        }
+
+        export async function getUrlsFromUser(displayName:string):Promise<Url[]> {
+            var ownedUrls = (await DatabaseHelper.selectData(database, "urls", {creator: displayName}, {}));
+            var accessedUrls = (await DatabaseHelper.selectData(database, "urls", {access: displayName}, {}));
+            return [...ownedUrls, ...accessedUrls];
         }
 
         export async function generateUrl(url:Url) {

@@ -1,22 +1,25 @@
-$("#url_shorting").submit(() => { //@ts-ignore
-    if (isStringAValidHttpUrl($("#longUrl").val()) || $("#longUrl").val().startsWith("https://lnkdto.link")) {
-        handleUrlShorting();
-    } else {
-        $("#longUrl").val("");
-        $("#longUrlMessage").html("<span style='color: red'>This is not a valid url!</span>");
-    }
+$(document).ready(function() {
+    $("#url_shorting").submit(() => { //@ts-ignore
+        if (isStringAValidHttpUrl($("#longUrl").val()) || $("#longUrl").val().startsWith("https://lnkdto.link")) {
+            handleUrlShorting();
+        } else {
+            $("#longUrl").val("");
+            $("#longUrlMessage").html("<span style='color: red'>This is not a valid url!</span>");
+        }
+    });
+
 });
 
 function handleUrlShorting() {
     $.ajax({
-        url: "/api/getShortUrl",
+        url: "/api/url",
         method: "POST",
         data: {
-            longUrl: $("#longUrl").val()
+            target: $("#longUrl").val()
         }
     }).done((data) => {
-        if (data.message === "OK") {
-            $("#longUrl").val(window.location.origin + "/" + data.shortUrl);
+        if (data.message === "Ok") {
+            $("#longUrl").val(data.domain + "/" + data.label);
             $("#longUrlMessage").html("<span style='color: green'>The Link has been copied to the clipboard</span>");
 
             var $temp = $("<input>");
@@ -25,8 +28,8 @@ function handleUrlShorting() {
             document.execCommand("copy");
             $temp.remove();
 
-            if (window.location.toString().includes("/user/usercontrol")) {
-                loadView('usercontrol', '/user/usercontrol');
+            if (window.location.toString().includes("/user/domainList")) {
+                loadView('domainList', '/user/domainList');
             }
 
             if (window.location.toString().includes("extension")) {

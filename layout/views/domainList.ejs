@@ -8,16 +8,16 @@
 
             <% content.forEach(function(url) { %>
 
-                <div>
-                    <h5><%= url.longUrl %></h5>
-                    <h3 id="shortLink<%= url.shortUrl %>"><%= url.shortUrl %></h3>
-                    <button id="showDetailedStats<%= url.shortUrl %>"><%- _lang("overview.buttons.stats"); %></button><br><br>
-                    <table>
-                        <tr>
-                            <td><button id="open<%= url.shortUrl %>"><%- _lang("overview.buttons.open"); %></button></td>
-                            <td><button id="delete<%= url.shortUrl %>"><%- _lang("overview.buttons.delete"); %></button></td>
-                        </tr>
-                    </table>
+                <div style="text-align: left">
+                    <h5><%= url.label %> | <%= url.domain %></h5>
+                    <h3>
+                        <%= url.target.substring(0, 34) %>...
+                        <span style="padding-left: 24px">
+                            <i id="showDetailedStats<%= url.label %>" class="fa fa-line-chart"></i>
+                            <i id="open<%= url.label %>" class="fa fa-copy"></i>
+                            <i id="delete<%= url.label %>" class="fa fa-trash"></i>
+                        </span>
+                    </h3>
                     <br><br>
                 </div>
 
@@ -28,7 +28,15 @@
         <div class="column">
             <h3><%- _lang("overview.detailedStats"); %> <b id="currentDetailedStats"></b></h3>
             <h4><%- _lang("overview.totalClicks"); %> <b id="totalClicks"></b></h4>
-            <canvas id="chart"></canvas>
+            <canvas id="clickChart"></canvas>
+            <div style="overflow-x: scroll">
+                <table>
+                    <tr>
+                        <td><canvas id="osChart"></canvas></td>
+                        <td><canvas id="platformChart"></canvas></td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
     </section>
@@ -42,11 +50,13 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     setTimeout(() => {
-        <% content.forEach(function (content) { %>
-            addButtonListeners(JSON.parse(`<%- JSON.stringify(content) %>`));
+        <% content.forEach(function (link) { %>
+            addButtonListeners(JSON.parse(`<%- JSON.stringify(link) %>`));
         <% }) %>
 
         showDetailedStats(JSON.parse(`<%- JSON.stringify(content) %>`)[0]);
     }, 450);
 
 </script>
+
+<script src="/assets/scripts/urlManager.js"></script>

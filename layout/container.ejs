@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%- include("partials/head.ejs", {}); %>
+    <%- include("partials/head.ejs", {loadStyles:true}); %>
 </head>
 <body style="margin:0;">
 
@@ -15,7 +15,7 @@
 
     <div style="display:none; background-color: #ffffff !important" id="pageContent" class="animate-bottom"></div>
 
-    <%- include("partials/footer.ejs", {_lang:_lang,fullWhite: view!=="edituser"&&view!=="usercontrol"}); %>
+    <%- include("partials/footer.ejs", {_lang:_lang,fullWhite: view!=="edituser"&&view!=="domainList"}); %>
     <%- include("partials/modals.ejs", {_lang:_lang,}); %>
 
     <script>

@@ -4,7 +4,7 @@
 // Import Express
 import * as express from "express";
 import {SessionHandler} from "../backend/SessionManager";
-import {UrlHelper} from "../backend/DatabaseManager";
+import {UrlHelper, UserHelper} from "../backend/DatabaseManager";
 
 // Import Version
 const {version} = require("../package.json");
@@ -20,9 +20,16 @@ router.get("/view/stats", (req, res) => {
     res.render("views/stats", {});
 })
 
-router.get("/view/usercontrol", async (req, res) => {
+router.get("/view/short", async (req, res) => {
     if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined')
-        res.render("views/usercontrol", {content: await UrlHelper.getUrlsFromUser(SessionHandler.getStorage(req)["username"])});
+        res.render("views/short", {user: await UserHelper.getAccount(SessionHandler.getStorage(req)["username"]), content: await UrlHelper.Urls.getUrlsFromUser(SessionHandler.getStorage(req)["username"])});
+    else
+        res.end("You are not logged in");
+})
+
+router.get("/view/domainList", async (req, res) => {
+    if (typeof SessionHandler.getStorage(req)["username"] !== 'undefined')
+        res.render("views/domainList", {content: await UrlHelper.Urls.getUrlsFromUser(SessionHandler.getStorage(req)["username"])});
     else
         res.end("You are not logged in");
 })

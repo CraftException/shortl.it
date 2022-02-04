@@ -53,6 +53,13 @@
       }
     },
 
+    "passwordCheck": {
+      "headline": "This URL is password protected!",
+      "subline": "Please enter the correct password to get redirected",
+      "field": "Password",
+      "button": "Check"
+    },
+
     "navbar": {
       "brand": "lnkdto.link (beta)",
       "home": "Home",
@@ -60,6 +67,7 @@
         "account": "Account",
         "shortenurls": "Your shorten URLs",
         "edituser": "Edit User",
+        "short": "Short an URL",
         "logout": "Logout",
         "login": "Login",
         "register": "Register"
@@ -101,6 +109,21 @@
       },
       "detailedStats": "Detailed stats of",
       "totalClicks": "Total Clicks:"
+    },
+
+    "short": {
+      "title": "Short an URL",
+      "target": "Target URL",
+      "domain": {
+        "title": "Custom domain",
+        "description": "To use your custom domain, you need to redirect to it by add a HTTP Header Redirection to ",
+        "field": "Custom Domain"
+      },
+      "password": {
+        "title": "Password",
+        "description": "You can encrypt the URL here, by making it only accessable with a password",
+        "field": "Password"
+      }
     },
 
     "start": {

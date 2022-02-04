@@ -1,13 +1,12 @@
 $("#login").submit(() => {
     $.ajax({
-        url: "/api/login",
+        url: "/api/session/" + $("#login_name").val(),
         method: "POST",
         data: {
-            username: $("#login_name").val(),
             password: $("#login_pw").val()
         }
     }).done((data) => {
-        if (data.message == "OK") {
+        if (data.message == "Ok") {
             document.location.href = "/user/control";
         } else if (data.message === "User does not exists") {
             $("#login_message").text("The User does not exists!");
@@ -25,15 +24,19 @@ $("#register").submit(() => {
     $("#footer").attr('style','display: none');
 
     $.ajax({
-        url: "/api/register",
+        url: "/api/user/new",
         method: "POST",
         data: {
-            username: $("#register_name").val(),
-            password: $("#register_pw").val(),
-            email: $("#register_mail").val()
+            user: JSON.stringify({
+                displayname: $("#register_name").val(),
+                mail: $("#register_mail").val(),
+                password: $("#register_pw").val(),
+                profilePicture: "",
+                createdAt: new Date().toLocaleDateString()
+            })
         }
     }).done((data) => {
-        if (data.message == "OK") {
+        if (data.message == "Ok") {
             document.location.href = "/user/control";
         } else if (data.message === "Already exists") {
             $("#register_message").text("The User already exists!");
@@ -47,13 +50,12 @@ $("#register").submit(() => {
 
 $("#recovery").submit(() => {
     $.ajax({
-        url: "/api/requestPasswordChange",
+        url: "/api/user/" + $("#recovery_mail").val() + "/requestRecovery",
         method: "POST",
-        data: {
-            username: $("#recovery_mail").val()
-        }
     }).done((data) => {
-        if (data.message == "OK") {
+        console.log(data)
+        console.log($("#recovery_mail").val())
+        if (data.message == "Ok") {
             $("#recovery_message").attr('style', 'color: green');
             $("#recovery_message").text("A password recovery link has been send to your mail address!");
         } else {
@@ -69,8 +71,8 @@ $("#logout").click(() => {
     $("#footer").attr('style','display: none');
 
     $.ajax({
-        url: "/api/logout",
-        method: "POST"
+        url: "/api/session",
+        method: "DELETE"
     }).done((data) => {
         document.location.reload();
         document.location.href = "/";
