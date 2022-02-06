@@ -363,7 +363,7 @@ router.post("/url", async (req, res) => {
             password: null,
             creator: "___",
             statistics: {
-                clicks: [],
+                clicks: {},
                 totalClicks: 0,
                 operationSystem: {android: 0, ios: 0, windows: 0, macos: 0, linux: 0, other: 0},
                 platforms: {desktop: 0, mobile: 0, other: 0}
@@ -395,6 +395,13 @@ router.get("/url/:domain/:label", async (req, res) => {
     if (!url) {
         res.json({
             message: "An error occurred"
+        });
+        return;
+    }
+
+    if (!(url.password && hashing.verify(req.get["Authorization"], url.password))) {
+        res.json({
+            message: "Wrong password"
         });
         return;
     }

@@ -13,8 +13,8 @@
   "lang": {
 
     "footer": {
-        "about": "About Lnkdto.link",
-        "description": "Lnkdto.link is a simple URL-Shortener, to cut your URLs",
+        "about": "About shortl.it",
+        "description": "shortl.it is a simple URL-Shortener, to cut your URLs",
         "legal": {
           "legal": "Legal",
           "imprint": "Imprint",
@@ -61,7 +61,7 @@
     },
 
     "navbar": {
-      "brand": "lnkdto.link (beta)",
+      "brand": "shortl.it (beta)",
       "home": "Home",
       "account": {
         "account": "Account",
@@ -89,6 +89,12 @@
         "repeatPassword": "Repeat new Password",
         "button": "Update Password"
       }
+    },
+
+    "domainlist": {
+      "operationSystems": "Operation Systems",
+      "platforms": "Platforms",
+      "totalClicks": " total Clicks"
     },
 
     "stats": {
@@ -129,9 +135,9 @@
     "start": {
       "title": "Get tiny, simple links",
       "subtitle": "Why use long links?",
-      "text": "Lnkdto.link is a simple URL-Shortener, to cut your URLs. It's really inconvenient to deal with long urls, and with an URL-Shortener, like Lnkdto.link, you can create short URLs, you can give to other people. Lnkdto.link has also a very good stat-system, you can see exactly, how many clicks your shorten link got.",
+      "text": "shortl.it is a simple URL-Shortener, to cut your URLs. It's really inconvenient to deal with long urls, and with an URL-Shortener, like shortl.it, you can create short URLs, you can give to other people. shortl.it has also a very good stat-system, you can see exactly, how many clicks your shorten link got.",
       "features": {
-        "title": "Features of lnkdto.link",
+        "title": "Features of shortl.it",
 
         "feature1Head": "Fast & easy",
         "feature1": "Links can be shortened with just two clicks. The link is immediately copied to the clipboard.",
@@ -140,10 +146,10 @@
         "feature2": "Through an account system, users can see exact statistics of their links, when the link was clicked how often.",
 
         "feature3Head": "Simple API",
-        "feature3": "Using our simple API, lnkdto.link can be implemented in any type of applications. You can find the documentation <a href='#'> here </a>",
+        "feature3": "Using our simple API, shortl.it can be implemented in any type of applications. You can find the documentation <a href='#'> here </a>",
 
         "feature4Head": "Open-Source",
-        "feature4": "The entire source code of lnkdto.link is available <a href='https://github.com/CraftException/lnkdto.link'>here</a>."
+        "feature4": "The entire source code of shortl.it is available <a href='https://github.com/CraftException/lnkdto.link'>here</a>."
       }
     }
   }

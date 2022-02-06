@@ -9,7 +9,7 @@
             <% content.forEach(function(url) { %>
 
                 <div style="text-align: left">
-                    <h5><%= url.label %> | <%= url.domain %></h5>
+                    <h5><%= url.label %> | <%= url.domain %> | <%= url.statistics.totalClicks %><%- _lang("domainlist.totalClicks"); %></h5>
                     <h3>
                         <%= url.target.substring(0, 34) %>...
                         <span style="padding-left: 24px">
@@ -32,8 +32,14 @@
             <div style="overflow-x: scroll">
                 <table>
                     <tr>
-                        <td><canvas id="osChart"></canvas></td>
-                        <td><canvas id="platformChart"></canvas></td>
+                        <td>
+                            <h5 style="text-align: center"><%- _lang("domainlist.operationSystems"); %></h5>
+                            <canvas id="osChart"></canvas>
+                        </td>
+                        <td>
+                            <h5 style="text-align: center"><%- _lang("domainlist.platforms"); %></h5>
+                            <canvas id="platformChart"></canvas>
+                        </td>
                     </tr>
                 </table>
             </div>

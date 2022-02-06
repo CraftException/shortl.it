@@ -12,8 +12,8 @@
 
   "lang": {
     "footer": {
-        "about": "Über Lnkdto.link",
-        "description": "Lnkdto.link ist ein simpler URL-Kürzer um lange URLs zu kürzen",
+        "about": "Über shortl.it",
+        "description": "shortl.it ist ein simpler URL-Kürzer um lange URLs zu kürzen",
         "legal": {
           "legal": "Rechtliches",
           "imprint": "Impressum",
@@ -105,9 +105,9 @@
     "start": {
       "title": "Kürze deine Links auf ein Minimum",
       "subtitle": "Warum lange Links?",
-      "text": "Lnkdto.link ist ein einfacher URL-Shorter, um URLs zu kürzen. Da Links oftmals unüberschaubar lang werden, kann lnkdto.link diese auf einen kleinen Link reduzieren. Außerdem verfügt lnkdto.link über ein übersichtliches Statistik-System um genau zu überprüfen wie oft ein Link genutzt wurde.\n\n",
+      "text": "shortl.it ist ein einfacher URL-Shorter, um URLs zu kürzen. Da Links oftmals unüberschaubar lang werden, kann shortl.it diese auf einen kleinen Link reduzieren. Außerdem verfügt shortl.it über ein übersichtliches Statistik-System um genau zu überprüfen wie oft ein Link genutzt wurde.\n\n",
       "features": {
-        "title": "Features von lnkdto.link",
+        "title": "Features von shortl.it",
 
         "feature1Head": "Schnell & simpel",
         "feature1": "Mit nur zwei Clicks können Links gekürzt werden. Der Link wird sofort in die Zwischenablage kopiert.",
@@ -116,10 +116,10 @@
         "feature2": "Durch ein Account-System können User genaue Statistiken ihrer Links einsehen, wann der Link wie oft angeklickt wurde.",
 
         "feature3Head": "Einfache API",
-        "feature3": "Durch einfach API-Schnittstellen kann lnkdto.link in jede Art von App implementiert werden. Ein Dokumentation findest du <a href='#'>hier</a>",
+        "feature3": "Durch einfach API-Schnittstellen kann shortl.it in jede Art von App implementiert werden. Ein Dokumentation findest du <a href='#'>hier</a>",
 
         "feature4Head": "Quelloffen",
-        "feature4": "Der Gesamte Quellcode von lnkdto.link ist <a href='https://github.com/CraftException/lnkdto.link'>hier</a> verfügbar."
+        "feature4": "Der Gesamte Quellcode von shortl.it ist <a href='https://github.com/CraftException/lnkdto.link'>hier</a> verfügbar."
       }
     }
   }
