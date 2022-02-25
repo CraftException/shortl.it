@@ -3,7 +3,7 @@
 
 # [shortl.it](https://shortl.it)
 
-[shortl.it](https://lnkdto.link) is a simple URL-Shortener, to cut your URLs. It's really inconvenient to deal with long urls. But with an URL-Shortener, like Lnkdto.link, you can create short URLs, you can give to other people. Lnkdto.link has also a very good stat-system. You can see exactly, how many clicks your shorten link got.
+[shortl.it](https://shortl.it) is a simple URL-Shortener, to cut your URLs. It's really inconvenient to deal with long urls. But with an URL-Shortener, like Lnkdto.link, you can create short URLs, you can give to other people. Lnkdto.link has also a very good stat-system. You can see exactly, how many clicks your shorten link got.
 
 **Please notice:**<br>
 shortl.it is currently in a beta state. 
